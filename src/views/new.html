@@ -1,0 +1,38 @@
+<div class="text-center" style="padding-top:30px;">
+    
+    <div class="small-container">
+      <div class="row">
+        <div class="col-md-10 col-md-offset-1">
+          <img class="logoBig" src="/assets/images/logo.png" />
+          <h2 class="header">LibreBox</h2>
+          <h3 class="header">Secure KYC-Tezos Wallet</h3>
+          <br />
+          <br />
+        </div>
+      </div>
+      <div ng-show="setting.disclaimer">
+          <div  class="row">
+          <div class="col-md-6 col-md-offset-3">
+            <a ng-click="create()" class="btn btn-success btn-block">Create LibreBox</a>
+            <br />
+          </div>
+          </div>
+          <div  class="row">
+          <div class="col-md-3 col-md-offset-3">
+            <a ng-click="restore()" class="btn btn-primary btn-block">Restore</a>
+          </div>
+          <div class="col-md-3">
+            <a ng-click="link()" class="btn btn-primary btn-block">Ledger</a>
+          </div>
+          </div>
+      </div>
+      <div class="row" ng-hide="setting.disclaimer">
+          <div class="col-md-10 col-md-offset-1">
+            <p class="alert alert-warning"><i class="leftIcon fas fa-exclamation-circle"></i><strong>Connecting to the live KYC-Tezos Mainnet.</strong></p>
+          </div>
+          <div class="col-md-6 col-md-offset-3">
+            <a ng-click="acceptDisclaimer()" class="btn btn-success btn-block">I understand</a>
+          </div>
+      </div>
+    </div>
+</div>

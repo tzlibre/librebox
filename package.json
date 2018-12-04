@@ -1,0 +1,48 @@
+{
+  "name": "librebox.github.io",
+  "version": "1.0.0",
+  "description": "This is the official repo for the LibreBox web wallet.",
+  "private": true,
+  "scripts": {
+    "test": "standard --fix",
+    "server": "webpack-dev-server --https --open",
+    "build-docker": "export NODE_ENV=production && node_modules/webpack/bin/webpack.js",
+    "build": "rm -rf dist && docker run --rm -v $(pwd):/app -w /app node:9 npm run build-docker"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@maestra.tzlibre.io:tzlibre/librebox.github.io.git"
+  },
+  "author": "TzLibre",
+  "license": "ISC",
+  "devDependencies": {
+    "copy-webpack-plugin": "^4.6.0",
+    "file-loader": "^2.0.0",
+    "html-loader": "^0.5.5",
+    "html-webpack-plugin": "^3.2.0",
+    "http-server": "^0.11.1",
+    "standard": "^12.0.1",
+    "webpack": "^4.25.1",
+    "webpack-cli": "^3.1.2",
+    "webpack-dev-server": "^3.1.10"
+  },
+  "standard": {
+    "ignore": [
+      "dist/**/*",
+      "assets/**/*"
+    ]
+  },
+  "dependencies": {
+    "angular": "^1.7.5",
+    "angular-blockies": "^1.1.1",
+    "angular-qrcode": "^7.2.0",
+    "angular-route": "^1.7.5",
+    "bootstrap": "^3.3.7",
+    "ethereum-blockies": "^0.1.1",
+    "jquery": "^2.2.4",
+    "sjcl": "^1.0.7",
+    "sweetalert": "^2.1.2",
+    "base-n": "^1.0.0",
+    "bs58check": "^2.1.2"
+  }
+}

@@ -1,0 +1,25 @@
+<div>
+    <div class="row mainHeaderBox">
+        <div class="col-xs-6">
+            <span class="logo"><img class="logoSmall" src="/assets/images/logo.png" /> LIBREBOX</span>
+        </div>
+    </div>
+
+    <div class="med-container">
+        <h2 class="med-title">Create your LibreBox</h2>
+        <p class="alert alert-info"><i class="leftIcon fas fa-exclamation-circle"></i><strong>Please enter your seed and passphrase below and we will attempt to restore your wallet. If you are trying to restore your Fundraiser/ICO wallet please select the 'Fundraiser Wallet' tab instead (even if you have restored it previously)</strong></p>
+    <div class="row text-center">
+        <div class="col-md-10 col-md-offset-1">
+            <p class="mnemonic" ng-bind-html="showSeed(mnemonic)"></p>
+            <div class="form-group">
+                <label>Optional Passphrase <i class="leftIcon fas fa-question-circle" data-toggle="tooltip" data-placement="right" title="" tooltip="" data-original-title="The optional passphrase will add an additional layer of security to your private key, and will also need to used to restore your account (so write this down as well). This is not the same as an encryption password."></i></label>
+                <input autocomplete="off" type="password" class="text-center form-control passphrase" ng-model="passphrase" placeholder="Optional Passphrase">
+            </div>
+        </div>
+        <div class="buttons-in-column">
+            <a ng-click="cancel()" class="btn btn-block">Cancel</a>
+            <a ng-click="create()" class="btn btn-success btn-block">Continue</a>
+        </div>
+    </div>
+    </div>
+</div>

@@ -1,0 +1,25 @@
+<!-- -->
+<!DOCTYPE html>
+<html lang="en" ng-app="librebox" ng-csp>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="assets/css/bootstrap.min.css">
+  <link rel="stylesheet" href="assets/css/angular-csp.css">
+  <link rel="stylesheet" href="assets/css/popup.css">
+  <link rel="stylesheet" href="assets/css/fontawesome-all.min.css">
+  <link rel="stylesheet" href="assets/css/sweet-alert.css">
+  <link rel="stylesheet" href="assets/css/tzl-style.css">
+  <link href="https://fonts.googleapis.com/css?family=Roboto+Slab" rel="stylesheet">
+  <link rel="icon" href="assets/favicon.ico" type="image/x-icon" />
+  <title>LibreBox - Light Wallet</title>
+<body>
+  <div id="area" ng-view></div>
+  <div id="loadingSpinnerContainer">
+    <div class="bg"></div>
+    <div id="loading-bar-spinner" class="spinner"><div class="spinner-icon"></div></div>
+  </div>
+  <script src="assets/libraries/eztz.min.js"></script>
+  <script src="assets/libraries/ledger.xtz.js"></script>
+</body>
+</html>

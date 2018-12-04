@@ -1,0 +1,89 @@
+<div>
+    <div class="row mainHeaderBox">
+        <div class="col-xs-6">
+            <span class="logo"><img class="logoSmall" src="/assets/images/logo.png" /> LIBREBOX</span>
+        </div>
+    </div>
+    
+    <div class="med-container">
+      <h2 class="med-title">Restore</h2>
+    <div class="row text-center tabChoices">
+    <div class="col-xs-4">
+        <a  ng-click="type = 'ico'" ng-class="type == 'ico' ? 'selected' : ''">ICO/Fundraiser Wallet</a>
+    </div>
+      <div class="col-xs-4">
+        <a ng-click="type = 'seed'" ng-class="type == 'seed' ? 'selected' : ''">Seed Phrase</a>
+      </div>
+      <div class="col-xs-4">
+        <a  ng-click="type = 'private'" ng-class="type == 'private' ? 'selected' : ''">Private Key</a>
+      </div>
+    </div>
+    <div ng-show="type == 'seed'" class="row text-center">
+      <div class="col-xs-12">
+            <p class="alert alert-info"><i class="leftIcon fas fa-exclamation-circle"></i><strong>Please enter your seed and passphrase below and we will attempt to restore your wallet. If you are trying to restore your Fundraiser/ICO wallet please select the 'Fundraiser Wallet' tab instead (even if you have restored it previously)</strong></p>
+        </div>
+        <div class="col-xs-10 col-xs-offset-1">
+            <div class="form-group">
+                <label>Seed Words/Mnenomic (leave a space between each word) *</label>
+                <textarea rows=2 class="text-center form-control" ng-model="seed"></textarea>
+            </div>
+            <div class="form-group">
+                <label>Optional Passphrase <i class="leftIcon fas fa-question-circle" data-toggle="tooltip" data-placement="right" title="" tooltip="" data-original-title="The optional passphrase will add an additional layer of security to your private key, and will also need to used to restore your account (so write this down as well). This is not the same as an encryption password."></i></label>
+                <input type="password" class="text-center form-control" ng-model="passphrase">
+            </div>
+        </div>
+    </div>
+    <div ng-show="type == 'private'" class="row text-center">
+      <div class="col-xs-12">
+            <p class="alert alert-info"><i class="leftIcon fas fa-exclamation-circle"></i><strong>Please enter your private key and we will attempt to restore your wallet. This option is for those users who have exported an unencrypted private key from the KYC-Tezos client (or have generated one elsewhere). Currently we only accept the "edsk..." variant.</strong></p>
+        </div>
+        <div class="col-xs-10 col-xs-offset-1">
+            <div class="form-group">
+                <label>Private Key * <i class="leftIcon fas fa-question-circle" data-toggle="tooltip" data-placement="right" title="" tooltip="" data-original-title="Your private key can be exported from LibreBox or other wallets, and will start with edesk or edsk"></i></label>
+                <input placeholder="edesk/edsk..." type="password" class="text-center form-control" ng-model="private_key">
+            </div>
+        </div>
+    </div>
+    <div ng-show="type == 'ico'" class="row text-center">
+      <div class="col-xs-12">
+            <p class="alert alert-info"><i class="leftIcon fas fa-exclamation-circle"></i><strong>If you have a fundraiser wallet, you must use this option everytime to restore your wallet. Please enter your seed, email address, password and address/public key hash from the fundraiser PDF and we will attempt to restore your wallet. If your account has not been activated, please enter the activation code below as well.</strong></p>
+        </div>
+        <div class="col-xs-10 col-xs-offset-1">
+            <div class="form-group">
+                <label>15 Word Secret Key/Seed (leave a space between each word) *</label>
+                <textarea rows=2 class="text-center form-control" ng-model="seed"></textarea>
+            </div>
+        </div>
+        <div class="col-xs-5 col-xs-offset-1">
+            <div class="form-group">
+                <label>Email * <i class="leftIcon fas fa-question-circle" data-toggle="tooltip" data-placement="right" title="" tooltip="" data-original-title="From the Fundraiser PDF, must be entered in exactly"></i></label>
+                <input type="text" class="text-center form-control" ng-model="email">
+            </div>
+        </div>
+        <div class="col-xs-5">
+            <div class="form-group">
+                <label>Password * <i class="leftIcon fas fa-question-circle" data-toggle="tooltip" data-placement="right" title="" tooltip="" data-original-title="This is the password you entered when you contributed to the ICO/Fundraiser. This may not be the same password as the account you created to complete KYC, and is not recorded on the Fundraiser PDF."></i></label>
+                <input type="password" class="text-center form-control" ng-model="ico_password">
+            </div>
+        </div>
+        <div class="col-xs-5 col-xs-offset-1">
+            <div class="form-group">
+                <label>Public Key Hash * <i class="leftIcon fas fa-question-circle" data-toggle="tooltip" data-placement="right" title="" tooltip="" data-original-title="From the Fundraiser PDF, must be entered in exactly"></i></label>
+                <input placeholder="tz1..." type="text" class="text-center form-control" ng-model="address">
+            </div>
+        </div>
+        <div class="col-xs-5">
+            <div class="form-group">
+                <label>Activation code <i class="leftIcon fas fa-question-circle" data-toggle="tooltip" data-placement="right" title="" tooltip="" data-original-title="Only enter if you haven't already activated your account"></i></label>
+                <input type="text" class="text-center form-control" ng-model="activation_code">
+            </div>
+        </div>
+    </div>
+    <div class="row text-center">
+        <div class="buttons-in-column">
+            <a ng-click="cancel()" class="btn btn-block">Cancel</a>
+            <a ng-click="restore()" class="btn btn-success btn-block">Restore</a>
+        </div>
+    </div>
+    </div>
+</div>

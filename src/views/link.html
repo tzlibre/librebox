@@ -1,0 +1,29 @@
+<div>
+    <div class="row mainHeaderBox">
+        <div class="col-xs-6">
+            <span class="logo"><img class="logoSmall" src="/assets/images/logo.png" /> LIBREBOX</span>
+        </div>
+    </div>
+    
+    <div class="med-container">
+      <h2 class="med-title">Use LibreBox with your Ledger Nano S</h2>
+        <div ng-show="type == 'ledger'" class="row text-center">
+          <div class="col-xs-12">
+            </div>
+            <div class="col-xs-10 col-xs-offset-1">
+                <div class="form-group">
+                   <h3 class="text-center">HD Derivation Path</h3>
+                   <h4>Advanced option to access different addresses - leave as it is to use the default key</h4>
+                   <input type="text" class="text-center form-control" ng-model="data" placeholder="Address Path">
+                </div>
+            </div>
+        </div>
+    <div class="row text-center">
+        <div class="col-xs-4 col-xs-offset-4">
+            <a ng-click="link()" class="btn btn-success btn-block">Link LibreBox</a>
+            <br />
+            <a ng-click="cancel()" class="btn-link">Cancel</a>
+        </div>
+    </div>
+    </div>
+</div>

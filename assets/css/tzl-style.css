@@ -1,0 +1,221 @@
+body {
+  font-family: 'Roboto Slab', Roboto, -apple-system, BlinkMacSystemFont, 'Segoe UI', Oxygen-Sans, Ubuntu, Cantarell, 'Helvetica Neue', Helvetica, Arial ,sans-serif !important;
+  color: #1F260B;
+  height: 100%;
+  overflow: hidden;
+}
+
+#area {
+  background-color: #1F260B;
+}
+
+.logoBig {
+  margin-bottom: 15px;
+}
+
+a {
+  color: #ABE617;
+}
+a:hover {
+  color: #89BF00 !important;
+}
+
+a.btn-link {
+  color: #ABE617;
+  font-size: 1.2em;
+}
+.tabChoices a {
+  color: #ABE617;
+}
+
+.btn {
+  border: 2px solid #ABE617 !important;
+  color: #1F260B !important;
+  text-transform: none;
+  font-size: 1.2em;
+  border-radius: 40px;
+  -webkit-transition: all 0.1s;
+  -moz-transition: all 0.1s;
+  -o-transition: all 0.1s;
+  transition: all 0.1s;
+}
+.btn.btn-success {
+  background: #ABE617;
+}
+.btn.btn-primary {
+  background-color: transparent;
+}
+.btn:hover {
+  background-color: #89BF00 !important;
+  border-color: #89BF00 !important;
+  color: #FFFFFF !important;
+}
+
+.btn-icon {
+  border-radius: 100% !important;
+  border: none !important;;
+  padding: 10px !important;
+  background: none !important;
+}
+.btn-icon i {
+  color: #FFFFFF;
+}
+
+.sweet-alert {
+  font-family: 'Roboto Slab', Roboto, -apple-system, BlinkMacSystemFont, 'Segoe UI', Oxygen-Sans, Ubuntu, Cantarell, 'Helvetica Neue', Helvetica, Arial ,sans-serif !important;
+}
+
+.sweet-alert button {
+  background: #ABE617 !important;
+  border: 2px solid #ABE617 !important;
+  color: #1F260B !important;
+  text-transform: none !important;
+  font-size: 1.2em !important;
+  border-radius: 40px !important;
+  -webkit-transition: all 0.1s;
+     -moz-transition: all 0.1s;
+       -o-transition: all 0.1s;
+          transition: all 0.1s;
+}
+.sweet-alert button:hover {
+  background-color: #89BF00 !important;
+  border-color: #89BF00 !important;
+  color: #FFFFFF !important;
+}
+
+.swal-button {
+  background: #ABE617 !important;
+  color: #1F260B !important;
+}
+
+.swal-button:hover {
+  background-color: #89BF00 !important;
+}
+
+#area div.mainHeaderBox {
+  background-color: #1F260B;
+  color: #FFFFFF;
+  border-bottom: none;
+}
+
+.mnemonic > span {
+  padding: 0.3em 0.6em;
+  font-size: 1.5em;
+  color: #1F260B;
+  background-color: #F6F6E6;
+}
+
+#loading-bar-spinner.spinner .spinner-icon {
+  border-top-color:  #ABE617 !important;
+  border-left-color: #ABE617 !important;
+}
+
+#area div.mainBody > .side {
+  padding: 20px;
+  background-color: #F6F6E6;
+}
+
+.sidebar li {
+  padding: 5px 0;
+  border: none;
+}
+.sidebar canvas {
+  left: 10px;
+  top: 7px;
+}
+.sidebar li a > i {
+  left: 20px;
+  top: 11px;
+}
+.sidebar li a > svg {
+  right: 10px;
+  top: 25px;
+}
+.sidebar li a {
+  background-color: white;
+  border-radius: 5px;
+  padding: 15px 10px 8px 50px;
+  color: #1F260B;
+  font-size: 1.2em;
+}
+.sidebar li > a > span {
+  top: 5px;
+  left: 50px;
+}
+
+.alert-warning {
+  background-color: transparent;
+}
+
+.nav-tabs {
+  border-bottom: 3px solid #1F260B;
+}
+.nav-tabs > li > a:hover {
+  color: #1F260B;
+  opacity: 1;
+}
+.nav-tabs > li > a {
+  font-size: 1.2em;
+  padding: 0.75em 1.5em;
+  color: #1F260B;
+  opacity: 0.5;
+  border-radius: 5px 5px 0 0;
+  border: none !important;
+}
+.nav-tabs > li.active > a,
+.nav-tabs > li.active > a:hover,
+.nav-tabs > li.active > a:focus {
+  color: #fff !important;
+  background-color: #1F260B;
+  border-bottom: 1px solid #1F260B !important;
+  border: 1px solid #ABE617;
+  border-bottom-color: #ABE617;
+  opacity: 1;
+}
+.transactions {
+  overflow-y: scroll;
+  height: 400px;
+}
+.mainTabs .tab-pane#transactions {
+  overflow: auto;
+}
+.btn-delegate {
+  display: inline-block;
+  padding: 0 1em;
+}
+.btn-disabled {
+  background: #eee!important;
+  color: #ccc!important;
+  border-color: #ccc!important;
+  cursor: not-allowed!important;;
+  pointer-events: none!important;;
+}
+.hide {
+  display: none;
+}
+.passphrase {
+  margin: 0 auto;
+  text-align: left;
+  font-size: 1.5em;
+  padding: 1em;
+}
+.seed-words {
+  text-align: left;
+  font-size: 1.5em;
+}
+
+.form-group label {
+  width: 100%;
+  text-align: left;
+}
+
+.buttons-in-column {
+  display: flex;
+  width: 80%;
+  margin: 0 auto;
+  justify-content: space-between;
+}
+
+.buttons-in-column > * {
+  max-width: 200px;
+}
