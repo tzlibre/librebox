@@ -17,7 +17,7 @@
         <h3 style="">My Accounts</h3>
         <div class="sideContainer">
         <ul class="sidebar">
-          <li ng-repeat="a in accounts track by a.address"><a ng-click="loadAccount($index)"><blocky class="avatar" seed='{{a.address}}' size='8' scale='16'></blocky> {{a.title}}<span>{{a.address}}</span></a></li>
+          <li class="{{a.address === accounts[account].address ? 'sidebar__selected' : ''}}" ng-repeat="a in accounts track by a.address"><a ng-click="loadAccount($index)"><blocky class="avatar" seed='{{a.address}}' size='8' scale='16'></blocky> {{a.title}}<span>{{a.address}}</span></a></li>
           <li><a style="padding-top: 8px!important;" ng-click="add()">Add KT1 Account <i class="fa fa-plus" ></i></a></li>
         </ul>
         </div>

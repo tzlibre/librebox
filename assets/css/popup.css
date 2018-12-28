@@ -282,18 +282,17 @@ h1{
   padding-top:20px;
 }
 
-
 .sidebar {
   padding:0;
   margin:0;
   list-style: none;
 }
-.sidebar li:first-child a {
-    color: #fff;
-    background: #1F260C;
+.sidebar__selected a, .sidebar__selected:hover a {
+    color: #fff!important;
+    background: #1F260C!important;
 }
-.sidebar li:first-child a .ng-binding {
-    color: #eee;
+.sidebar__selected a > span {
+    color: #fff!important;
 }
 .sidebar li {
   margin:0;

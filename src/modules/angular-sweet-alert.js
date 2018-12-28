@@ -10,7 +10,7 @@ angular.module('tzlibre.ngSweetAlert', [])
             resolve(await swal(...params)
               .then(result => {
                 if (result === null) {
-                  throw Error('Cancel')
+                  reject(Error('Cancel'))
                 } else {
                   return result
                 }

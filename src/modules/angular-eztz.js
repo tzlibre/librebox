@@ -43,7 +43,9 @@ angular.module(ANGULAR_EZTZ, [])
           }
           SweetAlert.swal('Awesome!', 'Transaction has been sent - this may take a few minutes to be included on the blockchain', 'success')
         } catch (e) {
-          SweetAlert.swal('Uh-oh!', e.message || 'Operation Failed! Please check your inputs')
+          if (e.message !== 'Cancel') {
+            SweetAlert.swal('Uh-oh!', e.message || 'Operation Failed! Please check your inputs')
+          }
         }
         popup.hideLoader()
       },
@@ -66,7 +68,9 @@ angular.module(ANGULAR_EZTZ, [])
           SweetAlert.swal('Awesome!', 'Delegation operation was successful - this may take a few minutes to update', 'success')
           popup.hideLoader()
         } catch (e) {
-          SweetAlert.swal('Uh-oh!', e.message || 'Operation Failed! Please check your inputs')
+          if (e.message !== 'Cancel') {
+            SweetAlert.swal('Uh-oh!', e.message || 'Operation Failed! Please check your inputs')
+          }
           popup.hideLoader()
         }
       },
@@ -87,7 +91,9 @@ angular.module(ANGULAR_EZTZ, [])
           return window.eztz.contract.hash(tx.hash, 0)
         } catch (e) {
           const msgError = e.message || 'Operation Failed! Please check your inputs'
-          SweetAlert.swal('Uh-oh!', msgError)
+          if (e.message === 'Cancel') {
+            SweetAlert.swal('Uh-oh!', msgError)
+          }
           popup.hideLoader()
           throw msgError
         }
