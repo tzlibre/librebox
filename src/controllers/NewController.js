@@ -2,7 +2,7 @@ export default ['$scope', '$location', 'Storage', function ($scope, $location, S
   $scope.setting = Storage.loadSetting()
   if (!$scope.setting) {
     $scope.setting = {
-      rpc: 'https://mainnet.tezrpc.me',
+      rpc: 'https://rpc.tezrpc.me',
       disclaimer: false
     }
     Storage.setSetting($scope.setting)
