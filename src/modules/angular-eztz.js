@@ -20,9 +20,9 @@ angular.module(ANGULAR_EZTZ, [])
           const keysWithourSkIfLedger = Object.assign({}, keys, { sk: type === 'ledger' ? false : keys.sk })
           let tx
           if (parameters) {
-            tx = await window.eztz.contract.send(to, from, keysWithourSkIfLedger, amount, parameters, fee)
+            tx = await window.eztz.contract.send(to, from, keysWithourSkIfLedger, amount, parameters, fee, config.gasLimit, config.storageLimit)
           } else {
-            tx = await window.eztz.rpc.transfer(from, keysWithourSkIfLedger, to, amount, fee)
+            tx = await window.eztz.rpc.transfer(from, keysWithourSkIfLedger, to, amount, fee, parameters, config.gasLimit, config.storageLimit)
           }
           if (type === 'ledger') {
             const signedTxByLedger = await window.tezledger.sign(keys.sk, '03' + tx.opbytes)
