@@ -38,11 +38,11 @@
     "angular-qrcode": "^7.2.0",
     "angular-route": "^1.7.5",
     "bootstrap": "^3.3.7",
+    "bs58check": "^2.1.2",
+    "deep-equal": "^1.0.1",
     "ethereum-blockies": "^0.1.1",
     "jquery": "^2.2.4",
     "sjcl": "^1.0.7",
-    "sweetalert": "^2.1.2",
-    "base-n": "^1.0.0",
-    "bs58check": "^2.1.2"
+    "sweetalert": "^2.1.2"
   }
 }

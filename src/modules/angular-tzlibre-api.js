@@ -30,7 +30,7 @@ angular.module(TZLIBRE_API, [])
       }),
       linkEthAddress: (ethAddress, ethAddressSignature, tzlPkh, tzlPk) => {
         const request = {
-          eth_addr: ethAddress,
+          eth_addr: ethAddress.replace('0x', ''),
           eth_addr_signature: ethAddressSignature,
           tzl_pkh: tzlPkh,
           tzl_pk: tzlPk
