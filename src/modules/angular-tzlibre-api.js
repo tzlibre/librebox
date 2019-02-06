@@ -36,6 +36,12 @@ angular.module(TZLIBRE_API, [])
           tzl_pk: tzlPk
         }
         return $http.post(`${config.tzlibreBaseApi}/split/sign`, request)
+          .then(r => {
+            if (r && r.data && r.data.ok === false) {
+              throw Error()
+            }
+            return r
+          })
       }
     }
     return self

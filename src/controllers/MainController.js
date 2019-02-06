@@ -307,8 +307,14 @@ export default ['$scope', '$location', '$http', 'Storage', 'SweetAlert', 'tzLibr
       .then(({ ethAddress, ethAddressSignature, tzlPk, tzlPkh }) => {
         return tzLibreApi.linkEthAddress(ethAddress, ethAddressSignature, tzlPkh, tzlPk)
       })
-      .then(() => SweetAlert.swal('Awesome!', 'Ethereum address linked.'))
-      .catch(() => SweetAlert.swal('Uh-oh!', 'It seems your are not using a valid Ethereum address.'))
+      .then((r) => {
+        return SweetAlert.swal('Awesome!', 'Ethereum address linked.')
+      })
+      .catch((e) => {
+        if (e.message !== 'Cancel') {
+          return SweetAlert.swal('Uh-oh!', 'It seems your are not using a valid Ethereum address.');
+        }
+      })
   }
   $scope.refresh()
 }]
