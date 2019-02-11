@@ -52,7 +52,7 @@
             </h5>
             <strong><a target="_blank" href="https://tzscan.io/{{accounts[account].address}}">View on tzscan <i class="fas fa-external-link-alt"></i></a></strong>
             <h5 class="balance">
-              {{accountDetails.balance}} 
+              {{accountDetails.balance}}
               <button ng-click="refresh()" class="icon-button" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
                 <i class="fas fa-sync" aria-hidden="true"></i>
               </button>
@@ -64,8 +64,8 @@
           <qrcode style="margin:25px;"  error-correction-level="H" size="180" data="{{accounts[account].address}}" color="#FFF" background="#000"></qrcode>
         </div>
     </div>
-    
-    
+
+
     <div class="row" ng-hide="accountLive">
                   <p class="alert alert-danger"><i class="leftIcon fas fa-exclamation-circle"></i><strong>This account has not been added to the blockchain yet - please wait for a baker to include this in a block before you can use this account.</strong></p>
     </div>
@@ -83,7 +83,7 @@
         <div class="tab-content mainTabs">
           <div role="tabpanel" class="tab-pane active text-center" id="transactions">
             <strong ng-hide="transactions.length != 0">No transactions available</strong>
-            
+
             <div class="transactions" ng-hide="transactions.length == 0">
               <div class='tx' ng-repeat="tx in transactions track by $index">
                 <div class="row">
@@ -107,7 +107,7 @@
                 </div>
               </div>
             </div>
-                    
+
           </div>
           <div role="tabpanel" class="tab-pane" id="send">
             <div class="row">
@@ -116,7 +116,7 @@
                       <label for="exampleInputEmail1">To address</label>
                       <input type="text" class="form-control" ng-model="toaddress" >
                     </div>
-                    
+
                 </div>
             </div>
             <div class="row">
@@ -137,6 +137,9 @@
                 <div class="col-md-8">
                     <div class="form-group">
                       <label for="exampleInputEmail1">Parameters</label>
+                        <span ng-if="type === 'ledger'" class="ledger-parameters-warning">
+                            <strong class="text-warning">Warning</strong>: Ledger doesn't currently parse tx transactions with parameters. If you enter parameters you won't be able to doublecheck tx details on your Ledger device display.
+                        </span>
                       <input type="text" class="form-control" placeholder="(optional)" ng-model="parameters" >
                     </div>
                 </div>
@@ -156,7 +159,7 @@
                 <h3>Title</h3>
               </div>
             </div>
-              
+
             <div class="row">
               <div class="col-md-4">
                   <div class="form-group">
@@ -167,7 +170,7 @@
                 <a ng-click="saveTitle()" class="btn btn-small btn-success btn-block">Update Title</a>
               </div>
             </div>
-            
+
             <div ng-hide="account > 0">
             <div class="row">
               <div class="col-md-12">
@@ -175,7 +178,7 @@
                 <p>You can use this to import KT1 addresses that have been originated else where (or after you have restored your account). You can view all of your originated KT1 addresses on <a target="_blank" href="https://tzscan.io/{{accounts[account].address}}?default=origination">tzscan.io</a>
               </div>
             </div>
-              
+
             <div class="row">
               <div class="col-md-4">
                   <div class="form-group">
@@ -187,28 +190,28 @@
               </div>
             </div>
             </div>
-            
+
 
             <div class="row" ng-show="account > 0">
               <div class="col-md-12">
                 <h3>Remove Account</h3>
               </div>
             </div>
-              
+
             <div class="row" ng-show="account > 0">
               <div class="col-md-3">
                 <a ng-click="remove()" class="btn btn-small btn-success btn-block">Remove Account</a>
               </div>
             </div>
           </div>
-            
+
           </div>
         </div>
 
       </div>
     </div>
     </div>
-      
+
 
       </div>
     </div>

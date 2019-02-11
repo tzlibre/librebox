@@ -14,7 +14,10 @@ angular.module(ANGULAR_EZTZ, [])
         if (amount !== parseFloat(amount)) throw Error('Invalid amount entered - please enter a valid number')
         if (fee !== parseFloat(fee)) throw Error('Invalid amount entered - please enter a valid number')
         try {
-          const messageAskPassword = `You are about to send ${amount} XTZ to ${to}  - this transaction is irreversible`
+          let messageAskPassword = `You are about to send ${amount} XTZ to ${to}  - this transaction is irreversible.`
+          if (type === 'ledger') {
+            await SweetAlert.swal('Warning!', 'Always doublecheck tx details (e.g. amount, recipient) on your Ledger device display before signing.')
+          }
           const password = await SweetAlert.getPassword(messageAskPassword)
           const keys = await Storage.decryptPrivateKeys(password)
           const keysWithourSkIfLedger = Object.assign({}, keys, { sk: type === 'ledger' ? false : keys.sk })

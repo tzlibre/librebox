@@ -219,3 +219,11 @@ a.btn-link {
 .buttons-in-column > * {
   max-width: 200px;
 }
+.ledger-parameters-warning {
+  padding-bottom: 1em;
+  font-size: 13px;
+  display: block;
+}
+.text-warning {
+  color: red;
+}

@@ -308,11 +308,18 @@ export default ['$scope', '$location', '$http', 'Storage', 'SweetAlert', 'tzLibr
         return tzLibreApi.linkEthAddress(ethAddress, ethAddressSignature, tzlPkh, tzlPk)
       })
       .then((r) => {
-        return SweetAlert.swal('Awesome!', 'Ethereum address linked.')
+        if (r.data && r.data.eth_addr && r.data.ok) {
+          const ethAddress = r.data.eth_addr
+          $scope.isVerified = true
+          $scope.canISign = false
+          $scope.ethereumAddress = ethAddress
+          return SweetAlert.swal('Awesome!', 'Ethereum address linked.')
+        }
+        throw Error
       })
       .catch((e) => {
         if (e.message !== 'Cancel') {
-          return SweetAlert.swal('Uh-oh!', 'It seems your are not using a valid Ethereum address.');
+          return SweetAlert.swal('Uh-oh!', 'It seems your are not using a valid Ethereum address.')
         }
       })
   }
