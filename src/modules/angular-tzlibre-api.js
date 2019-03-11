@@ -17,7 +17,7 @@ angular.module(TZLIBRE_API, [])
           })
       },
       isVerified: (tz1Address) => self.getInfoAccount(tz1Address).then(r => {
-        if (r) {
+        if (r && r.eth_addr !== '0x0000000000000000000000000000000000000000') {
           return {
             verified: r.valid_proof,
             ethereumAddress: r.eth_addr,

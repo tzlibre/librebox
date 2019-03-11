@@ -29,8 +29,10 @@ angular.module('tzlibre.ngSweetAlert', [])
         },
         buttons: [ true, 'Confirm' ]
       }).then(password => {
-        if (password) return password
-        throw Error('Wrong password')
+        if (password === null) {
+          throw Error('Cancel')
+        }
+        return password
       }),
       askAmountKt1Account: async () => {
         const amount = await self.swal({

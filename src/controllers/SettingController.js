@@ -1,3 +1,5 @@
+import popup from '../helpers/popup'
+
 export default ['$scope', '$location', 'Storage', 'SweetAlert', function ($scope, $location, Storage, SweetAlert) {
   if (Storage.isWalletEmpty()) {
     $location.path('/new')
@@ -10,12 +12,18 @@ export default ['$scope', '$location', 'Storage', 'SweetAlert', function ($scope
     window.eztz.node.setProvider($scope.setting.rpc)
     $location.path('/main')
   }
-  $scope.show = function () {
+  $scope.show = async function () {
     if (!$scope.password) return SweetAlert.swal('Uh-oh!', 'Please enter your password')
-    if ($scope.password === Storage.password) {
-      $scope.privateKey = Storage.keys.sk
-    } else {
-      SweetAlert.swal('Uh-oh!', 'Incorrect password')
-    }
+    Storage.decryptPrivateKeys($scope.password)
+      .then(({ sk }) => {
+        $scope.$evalAsync(() => {
+          $scope.privateKey = sk
+          popup.hideLoader()
+        })
+      })
+      .catch(e => {
+        popup.hideLoader()
+        SweetAlert.swal('Uh-oh!', 'Incorrect password')
+      })
   }
 }]

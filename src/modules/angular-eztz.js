@@ -34,7 +34,9 @@ angular.module(ANGULAR_EZTZ, [])
           }
           SweetAlert.swal('Awesome!', 'Transaction has been sent - this may take a few minutes to be included on the blockchain', 'success')
         } catch (e) {
-          SweetAlert.swal('Uh-oh!', e.message || 'Operation Failed! Please check your inputs')
+          if (e.message !== 'Cancel') {
+            SweetAlert.swal('Uh-oh!', e.message || 'Operation Failed! Please check your inputs')
+          }
         }
         popup.hideLoader()
       },
