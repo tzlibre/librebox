@@ -27,39 +27,40 @@ export default ['$scope', '$location', '$http', 'Storage', 'SweetAlert', 'tzLibr
     })
   if (Storage.restored) {
     popup.showLoader()
-    $http.get('https://betaapi.tezex.info/v2/tzx/account/' + $scope.accounts[0].address + '/originations').then(function (r) {
-      if (r.status === 200) {
-        if (r.data.originations.length > 0) {
-          SweetAlert.swal({
-            title: 'Import KT addresses',
-            text: 'We have found ' + r.data.originations.length + ' KT1 address(es) linked to your public key - would you like to import them now? (You can also manually import these by going to Options > Import)',
-            type: 'info',
-            showCancelButton: true,
-            confirmButtonText: 'Yes, import them!',
-            closeOnConfirm: true
-          }).then(isConfirm => {
-            if (isConfirm) {
-              for (let i = 0; i < r.data.originations.length; i++) {
-                $scope.accounts.push(
-                  {
-                    title: 'Account ' + ($scope.accounts.length),
-                    address: JSON.parse(r.data.originations[i].new_account)[0]
-                  }
-                )
+    $http.get('https://api1.tzscan.io/v1/operations/' + $scope.accounts[0].address + '?type=Origination')
+      .then(function (r) {
+        if (r.status === 200) {
+          if (r.data.length > 0) {
+            SweetAlert.swal({
+              title: 'Import KT addresses',
+              text: 'We have found ' + r.data.length + ' KT1 address(es) linked to your public key - would you like to import them now? (You can also manually import these by going to Options > Import)',
+              type: 'info',
+              showCancelButton: true,
+              confirmButtonText: 'Yes, import them!',
+              closeOnConfirm: true
+            }).then(isConfirm => {
+              if (isConfirm) {
+                for (let i = 0; i < r.data.length; i++) {
+                  $scope.accounts.push(
+                    {
+                      title: 'Account ' + ($scope.accounts.length),
+                      address: r.data[i].type.operations[0].tz1.tz
+                    }
+                  )
+                }
+                ss.accounts = $scope.accounts
+                Storage.setStore(ss)
+                $scope.refresh()
               }
-              ss.accounts = $scope.accounts
-              Storage.setStore(ss)
-              $scope.refresh()
-            }
+              popup.hideLoader()
+            })
+          } else {
             popup.hideLoader()
-          })
+          }
         } else {
           popup.hideLoader()
         }
-      } else {
-        popup.hideLoader()
-      }
-    })
+      })
     if (Storage.ico) SweetAlert.swal('Awesome', 'You have successfully restored your ICO wallet. If you have just activated your account, please note that this may take some time to show.')
     Storage.restored = false
     Storage.ico = false
@@ -97,9 +98,15 @@ export default ['$scope', '$location', '$http', 'Storage', 'SweetAlert', 'tzLibr
     return window.eztz.utility.totez(parseInt(m))
   }
   const refreshTransactions = function () {
-    $http.get('https://betaapi.tezex.info/v2/tzx/account/' + $scope.accounts[$scope.account].address + '/transactions').then(function (r) {
-      if (r.status === 200 && r.data.transactions.length > 0) {
-        $scope.transactions = r.data.transactions
+    $http.get('https://api1.tzscan.io/v1/operations/' + $scope.accounts[$scope.account].address + '?type=Transaction').then(function (r) {
+      if (r.status === 200 && r.data.length > 0) {
+        $scope.transactions = r.data.map(tx => ({
+          source: tx.type.source.tz,
+          destination: tx.type.operations[0].destination.tz,
+          time: tx.type.operations[0].timestamp,
+          hash: tx.hash,
+          amount: tx.type.operations[0].amount
+        }))
       }
     })
   }
