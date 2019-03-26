@@ -260,7 +260,7 @@ export default ['$scope', '$location', '$http', 'Storage', 'SweetAlert', 'tzLibr
       })
     }
     refreshTransactions()
-    retrieveBalanceByAddress('$scope.accounts[a].address')
+    retrieveBalanceByAddress($scope.accounts[a].address)
       .then(function (balance) {
         $scope.$apply(function () {
           $scope.accountDetails.bank_balance = balance

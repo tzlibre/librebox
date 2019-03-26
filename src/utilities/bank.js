@@ -10,10 +10,14 @@ export const retrieveBalanceByAddress = (address) => fetch(
   .then(r => r.json())
   .then(data => data.args[1].args[1].args[1].args[1].args[1].args[1].args[1].args[0])
   .then(list => {
-    return list
+    let filtered = list
       .map(l => ({
         address: l.args[0].string,
         balance: Math.floor(parseInt(l.args[1].int) / 1000000)
       }))
-      .filter(l => l.balance > 0 && l.address === address)[0].balance || 0
+      .filter(l => {
+        return l.balance > 0 && l.address === address
+      })
+    console.log(address, filtered)
+    return filtered.length === 0 ? 0 : filtered[0].balance
   })
