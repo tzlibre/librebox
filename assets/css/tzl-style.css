@@ -227,3 +227,14 @@ a.btn-link {
 .text-warning {
   color: red;
 }
+#bank {
+  text-align: left;
+}
+#bank .btn-block {
+  padding: 3px!important;
+}
+.balances {
+  display: flex;
+  width: 350px;
+  justify-content: space-between;
+}

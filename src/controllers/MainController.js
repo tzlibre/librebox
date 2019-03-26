@@ -1,5 +1,6 @@
 import config from '../config/config'
 import popup from '../helpers/popup'
+import { retrieveBalanceByAddress } from '../utilities/bank'
 
 export default ['$scope', '$location', '$http', 'Storage', 'SweetAlert', 'tzLibreApi', 'angularEztz', function ($scope, $location, $http, Storage, SweetAlert, tzLibreApi, angularEztz) {
   const { tzLibreAddress, protos } = config
@@ -72,6 +73,7 @@ export default ['$scope', '$location', '$http', 'Storage', 'SweetAlert', 'tzLibr
   $scope.accountLive = true
   $scope.tt = $scope.accounts[$scope.account].title
   $scope.amount = 0
+  $scope.amount_to_deposit = 0
   $scope.fee = config.defaultFee
   $scope.parameters = ''
   $scope.delegateType = ''
@@ -239,7 +241,10 @@ export default ['$scope', '$location', '$http', 'Storage', 'SweetAlert', 'tzLibr
     $scope.tt = $scope.accounts[$scope.account].title
     Storage.setStore(ss)
     $scope.accountDetails = {
-      balance: 'Loading...',
+      balance: 'n/a',
+      bank_balance: 'n/a',
+      is_withdrawable: false,
+      is_depositable: false,
       usd: 'Loading...',
       raw_balance: 'Loading...'
     }
@@ -255,6 +260,19 @@ export default ['$scope', '$location', '$http', 'Storage', 'SweetAlert', 'tzLibr
       })
     }
     refreshTransactions()
+    retrieveBalanceByAddress('$scope.accounts[a].address')
+      .then(function (balance) {
+        $scope.$apply(function () {
+          $scope.accountDetails.bank_balance = balance
+          $scope.accountDetails.is_withdrawable = balance > 0
+        })
+      })
+      .catch(function () {
+        $scope.$apply(function () {
+          $scope.accountDetails.bank_balance = 0
+          $scope.accountDetails.is_withdrawable = false
+        })
+      })
     window.eztz.rpc.getBalance($scope.accounts[a].address).then(function (r) {
       $scope.$apply(function () {
         $scope.accountLive = true
@@ -264,6 +282,8 @@ export default ['$scope', '$location', '$http', 'Storage', 'SweetAlert', 'tzLibr
         $scope.accountDetails.raw_balance = rb
         $scope.accountDetails.balance = window.eztz.utility.formatMoney(bal, 2, '.', ',') + 'ꜩ'
         $scope.accountDetails.usd = '$' + window.eztz.utility.formatMoney(usdbal, 2, '.', ',') + 'USD'
+        $scope.accountDetails.is_depositable = bal > 1002
+        $scope.amount_to_deposit = $scope.accountDetails.is_depositable ? Math.ceil((bal - 2) * 100) / 100 : 0
       })
     }).catch(function (e) {
       $scope.$apply(function () {
@@ -294,6 +314,27 @@ export default ['$scope', '$location', '$http', 'Storage', 'SweetAlert', 'tzLibr
     const amount = $scope.amount
     const fee = $scope.fee
     const parameters = $scope.parameters
+    const type = $scope.type
+    return angularEztz.send(from, to, amount, fee, parameters, type)
+  }
+  $scope.deposit = function () {
+    const from = $scope.accounts[$scope.account].address
+    const to = 'KT1V7VoyjbvqSmnRtv9pHkRuBCPT7UubCrCX'
+    const amount = $scope.amount_to_deposit
+    const fee = 30000
+    const parameters = ''
+    const type = $scope.type
+    if (amount < 1000) {
+      return SweetAlert.swal('Uh-oh!', 'Send minimum 1000 ꜩ to the TzLibre Deposit.')
+    }
+    return angularEztz.send(from, to, amount, fee, parameters, type)
+  }
+  $scope.withdraw = function () {
+    const from = $scope.accounts[$scope.account].address
+    const to = 'KT1V7VoyjbvqSmnRtv9pHkRuBCPT7UubCrCX'
+    const amount = 1
+    const fee = 30000
+    const parameters = ''
     const type = $scope.type
     return angularEztz.send(from, to, amount, fee, parameters, type)
   }
