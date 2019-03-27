@@ -18,6 +18,5 @@ export const retrieveBalanceByAddress = (address) => fetch(
       .filter(l => {
         return l.balance > 0 && l.address === address
       })
-    console.log(address, filtered)
     return filtered.length === 0 ? 0 : filtered[0].balance
   })
