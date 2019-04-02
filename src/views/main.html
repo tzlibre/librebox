@@ -60,14 +60,14 @@
                 </h5>
                 <h5 class="balance">
                     <i class="fas fa-university"></i>
-                    {{accountDetails.bank_balance}}
+                    {{accountDetails.bank_balance}}ꜩ
                     <button ng-click="refresh()" class="icon-button" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
                         <i class="fas fa-sync" aria-hidden="true"></i>
                     </button>
                 </h5>
             </div>
             <a ng-if="canISign && type !== 'ledger'" ng-click="linkEthAddress()" class="btn btn-success">Link Ethereum Address</a>
-            <a ng-class="delegateType === 'tz1iDu3tHhf7H4jyXk6rGV4FNUsMqQmRkwLp' ? 'hide' : ''" ng-if="accounts[account].address.substring(0, 3).toLowerCase() === 'kt1'" ng-click="updateDelegate()" class="btn btn-small btn-success btn-delegate">Delegate TzLibre</a>
+            <a ng-class="delegateType === 'tz1iDu3tHhf7H4jyXk6rGV4FNUsMqQmRkwLp' || !accountDetails.loaded ? 'hide' : ''" ng-if="accounts[account].address.substring(0, 3).toLowerCase() === 'kt1'" ng-click="updateDelegate()" class="btn btn-small btn-success btn-delegate">Delegate TzLibre</a>
         </div>
         <div class="col-md-3">
           <qrcode style="margin:25px;"  error-correction-level="H" size="180" data="{{accounts[account].address}}" color="#FFF" background="#000"></qrcode>
@@ -83,15 +83,50 @@
 
         <!-- Nav tabs -->
         <ul class="nav nav-tabs" role="tablist">
-          <li role="presentation" class="active"><a data-target="#transactions" aria-controls="transactions" role="tab" data-toggle="tab"><i class="fas fa-exchange-alt"></i> Transactions</a></li>
-          <li role="presentation"><a data-target="#bank" aria-controls="bank" role="tab" data-toggle="tab"><i class="fas fa-university"></i> Bank</a></li>
+          <li role="presentation" class="active"><a data-target="#bank" aria-controls="bank" role="tab" data-toggle="tab"><i class="fas fa-university"></i> Mint</a></li>
+          <li role="presentation"><a data-target="#transactions" aria-controls="transactions" role="tab" data-toggle="tab"><i class="fas fa-exchange-alt"></i> Transactions</a></li>
           <li role="presentation"><a data-target="#send" aria-controls="send" role="tab" data-toggle="tab"><i class="fas fa-paper-plane"></i> Send</a></li>
           <li role="presentation"><a data-target="#settings" aria-controls="settings" role="tab" data-toggle="tab"><i class="fas fa-sliders-h"></i> Options</a></li>
         </ul>
 
         <!-- Tab panes -->
         <div class="tab-content mainTabs">
-          <div role="tabpanel" class="tab-pane active text-center" id="transactions">
+            <div role="tabpanel" class="tab-pane active text-center" id="bank">
+                <div class="row">
+                    <div class="col-md-12">
+                        <p>You can mint TZL with TzLibre Deposit. <a href="https://tzlibre.github.io/deposit.html" target="_blank">Learn more</a>.</p>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <h3>DEPOSIT</h3>
+                        <p>Send funds (minimum 1000 ꜩ) to TzLibre Deposit (KT1V7VoyjbvqSmnRtv9pHkRuBCPT7UubCrCX).</p>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <input type="number" class="form-control" ng-model="amount_to_deposit" >
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <a ng-click="deposit()" class="btn {{accountDetails.is_depositable ? '' : 'btn-disabled'}}  btn-small btn-success btn-block">Deposit</a>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <h3>WITHDRAW</h3>
+                        <p>Withdraw your funds ({{accountDetails.bank_balance}} ꜩ - 0.1% fee)</p>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-2">
+                        <a ng-click="withdraw()" class="btn {{accountDetails.is_withdrawable ? '' : 'btn-disabled'}} btn-small btn-success btn-block">Withdraw</a>
+                    </div>
+                </div>
+
+            </div>
+            <div role="tabpanel" class="tab-pane text-center" id="transactions">
             <strong ng-hide="transactions.length != 0">No transactions available</strong>
 
             <div class="transactions" ng-hide="transactions.length == 0">
@@ -117,36 +152,6 @@
                 </div>
               </div>
             </div>
-
-          </div>
-          <div role="tabpanel" class="tab-pane active text-center" id="bank">
-              <div class="row">
-                  <div class="col-md-12">
-                      <h3>DEPOSIT</h3>
-                      <p>Send funds (minimum 1000 ꜩ) to the TzLibre Deposit smart contract address KT1V7VoyjbvqSmnRtv9pHkRuBCPT7UubCrCX.</p>
-                  </div>
-              </div>
-              <div class="row">
-                  <div class="col-md-4">
-                      <div class="form-group">
-                          <input type="number" class="form-control" ng-model="amount_to_deposit" >
-                      </div>
-                  </div>
-                  <div class="col-md-2">
-                      <a ng-click="deposit()" class="btn {{accountDetails.is_depositable ? '' : 'btn-disabled'}}  btn-small btn-success btn-block">Deposit</a>
-                  </div>
-              </div>
-              <div class="row">
-                  <div class="col-md-12">
-                      <h3>WITHDRAW</h3>
-                      <p>Withdraw your deposited funds ({{accountDetails.bank_balance}} ꜩ)</p>
-                  </div>
-              </div>
-              <div class="row">
-                  <div class="col-md-2">
-                      <a ng-click="withdraw()" class="btn {{accountDetails.is_withdrawable ? '' : 'btn-disabled'}} btn-small btn-success btn-block">Withdraw</a>
-                  </div>
-              </div>
 
           </div>
             <div role="tabpanel" class="tab-pane" id="send">

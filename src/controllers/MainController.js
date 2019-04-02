@@ -74,9 +74,9 @@ export default ['$scope', '$location', '$http', 'Storage', 'SweetAlert', 'tzLibr
   $scope.tt = $scope.accounts[$scope.account].title
   $scope.amount = 0
   $scope.amount_to_deposit = 0
-  $scope.fee = config.defaultFee
+  $scope.fee = config.txFee
   $scope.parameters = ''
-  $scope.delegateType = ''
+  $scope.delegateType = 'n/a'
   $scope.dd = ''
   $scope.block = {
     net: 'Loading..',
@@ -246,7 +246,8 @@ export default ['$scope', '$location', '$http', 'Storage', 'SweetAlert', 'tzLibr
       is_withdrawable: false,
       is_depositable: false,
       usd: 'Loading...',
-      raw_balance: 'Loading...'
+      raw_balance: 'Loading...',
+      loaded: false
     }
     if (a) {
       window.eztz.rpc.getDelegate($scope.accounts[a].address).then(function (r) {
@@ -284,6 +285,7 @@ export default ['$scope', '$location', '$http', 'Storage', 'SweetAlert', 'tzLibr
         $scope.accountDetails.usd = '$' + window.eztz.utility.formatMoney(usdbal, 2, '.', ',') + 'USD'
         $scope.accountDetails.is_depositable = bal >= 1000
         $scope.amount_to_deposit = $scope.accountDetails.is_depositable ? Math.ceil((bal - 2) * 100) / 100 : 0
+        $scope.accountDetails.loaded = true
       })
     }).catch(function (e) {
       $scope.$apply(function () {
@@ -294,6 +296,7 @@ export default ['$scope', '$location', '$http', 'Storage', 'SweetAlert', 'tzLibr
         $scope.accountDetails.raw_balance = rb
         $scope.accountDetails.balance = window.eztz.utility.formatMoney(bal, 2, '.', ',') + 'ꜩ'
         $scope.accountDetails.usd = '$' + window.eztz.utility.formatMoney(usdbal, 2, '.', ',') + 'USD'
+        $scope.accountDetails.loaded = false
       })
     })
   }
@@ -321,29 +324,27 @@ export default ['$scope', '$location', '$http', 'Storage', 'SweetAlert', 'tzLibr
     const from = $scope.accounts[$scope.account].address
     const to = 'KT1V7VoyjbvqSmnRtv9pHkRuBCPT7UubCrCX'
     const amount = $scope.amount_to_deposit
-    const fee = 30000
     const parameters = ''
     const type = $scope.type
     if ((($scope.accountDetails.raw_balance / 1000000) - amount) < 2) {
-      return SweetAlert.swal('Uh-oh!', 'Residual funds not enough to pay for gas (min. 2ꜩ)')
+      return SweetAlert.swal('Uh-oh!', 'Not enough funds to pay for network fees (min. 2ꜩ)')
     }
-    return angularEztz.send(from, to, amount, fee, parameters, type)
+    return angularEztz.send(from, to, amount, config.bankFee, parameters, type, config.bankGasLimit, config.bankStorageLimit)
   }
   $scope.withdraw = function () {
     const from = $scope.accounts[$scope.account].address
     const to = 'KT1V7VoyjbvqSmnRtv9pHkRuBCPT7UubCrCX'
     const amount = 0.0001
-    const fee = 30000
     const parameters = ''
     const type = $scope.type
     if ((($scope.accountDetails.raw_balance / 1000000) - amount) < 2) {
-      return SweetAlert.swal('Uh-oh!', 'Residual funds not enough to pay for gas (min. 2ꜩ)')
+      return SweetAlert.swal('Uh-oh!', 'Not enough funds to pay for network fees (min. 2ꜩ)')
     }
-    return angularEztz.send(from, to, amount, fee, parameters, type)
+    return angularEztz.send(from, to, amount, config.bankFee, parameters, type, config.bankGasLimit, config.bankStorageLimit)
   }
   $scope.clear = function () {
     $scope.amount = 0
-    $scope.fee = config.defaultFee
+    $scope.fee = config.txFee
     $scope.toaddress = ''
     $scope.parameters = ''
   }

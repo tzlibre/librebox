@@ -7,7 +7,8 @@ const ANGULAR_EZTZ = 'angularEztz'
 angular.module(ANGULAR_EZTZ, [])
   .factory(ANGULAR_EZTZ, ['$rootScope', 'SweetAlert', 'Storage', 'tzLibreApi', ($rootScope, SweetAlert, Storage, tzLibreApi) => {
     return {
-      send: async (from, to, amount, fee, parameters, type) => {
+      send: async (from, to, amount, fee, parameters, type, gasLimit = config.txGasLimit, storageLimit = config.txStorageLimit) => {
+        console.log({ from, to, amount, fee, parameters, type })
         if (!amount || !to) throw Error('Please enter amount and a destination')
         if (amount < 0) throw Error('Invalid amount entered - please enter a positive number')
         if (fee < 0) throw Error('Invalid amount entered - please enter a positive number')
@@ -23,9 +24,9 @@ angular.module(ANGULAR_EZTZ, [])
           const keysWithourSkIfLedger = Object.assign({}, keys, { sk: type === 'ledger' ? false : keys.sk })
           let tx
           if (parameters) {
-            tx = await window.eztz.contract.send(to, from, keysWithourSkIfLedger, amount, parameters, fee, config.gasLimit, config.storageLimit)
+            tx = await window.eztz.contract.send(to, from, keysWithourSkIfLedger, amount, parameters, fee, gasLimit, storageLimit)
           } else {
-            tx = await window.eztz.rpc.transfer(from, keysWithourSkIfLedger, to, amount, fee, parameters, config.gasLimit, config.storageLimit)
+            tx = await window.eztz.rpc.transfer(from, keysWithourSkIfLedger, to, amount, fee, parameters, gasLimit, storageLimit)
           }
           if (type === 'ledger') {
             const signedTxByLedger = await window.tezledger.sign(keys.sk, '03' + tx.opbytes)
@@ -70,7 +71,8 @@ angular.module(ANGULAR_EZTZ, [])
           const password = await SweetAlert.getPassword(messageAskPassword)
           const keys = await Storage.decryptPrivateKeys(password)
           const keysWithourSkIfLedger = Object.assign({}, keys, { sk: type === 'ledger' ? false : keys.sk })
-          let tx = await window.eztz.rpc.account(keysWithourSkIfLedger, amount, true, true, addressToDelegate, config.defaultFee)
+          let tx = await window.eztz.rpc.account(keysWithourSkIfLedger, amount, true, true, addressToDelegate,
+            config.originFee, config.originGasLimit, config.originStorageLimit)
           if (type === 'ledger') {
             const rr = await window.tezledger.sign(keys.sk, '03' + tx.opbytes)
             tx.opOb.signature = window.eztz.utility.b58cencode(window.eztz.utility.hex2buf(rr.signature), window.eztz.prefix.edsig)
