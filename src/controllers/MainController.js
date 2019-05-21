@@ -23,7 +23,7 @@ export default ['$scope', '$location', '$http', 'Storage', 'SweetAlert', 'tzLibr
       $scope.$evalAsync(function () {
         $scope.isVerified = verified
         $scope.ethereumAddress = ethereumAddress
-        $scope.canISign = !verified && (!tz1Address || tz1Address === $scope.accounts[0].address)
+        $scope.canISign = !verified
       })
     })
   if (Storage.restored) {
