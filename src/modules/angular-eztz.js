@@ -9,7 +9,7 @@ angular.module(ANGULAR_EZTZ, [])
     return {
       send: async (from, to, amount, fee, parameters, type, gasLimit = config.txGasLimit, storageLimit = config.txStorageLimit) => {
         console.log({ from, to, amount, fee, parameters, type })
-        if (!amount || !to) throw Error('Please enter amount and a destination')
+        if (!to) throw Error('Please enter a destination')
         if (amount < 0) throw Error('Invalid amount entered - please enter a positive number')
         if (fee < 0) throw Error('Invalid amount entered - please enter a positive number')
         if (amount !== parseFloat(amount)) throw Error('Invalid amount entered - please enter a valid number')
