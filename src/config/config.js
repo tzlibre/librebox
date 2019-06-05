@@ -15,6 +15,6 @@ export default {
   originStorageLimit: 257,
 
   txFee: 1420,
-  txGasLimit: 10100,
-  txStorageLimit: 257
+  txGasLimit: 10300,
+  txStorageLimit: 300
 }
