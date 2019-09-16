@@ -1,12 +1,5 @@
 export default ['$scope', '$location', 'Storage', function ($scope, $location, Storage) {
   $scope.setting = Storage.loadSetting()
-  if (!$scope.setting) {
-    $scope.setting = {
-      rpc: 'https://mainnet.tezrpc.me',
-      disclaimer: false
-    }
-    Storage.setSetting($scope.setting)
-  }
   window.eztz.node.setProvider($scope.setting.rpc)
 
   const checkStore = function () {

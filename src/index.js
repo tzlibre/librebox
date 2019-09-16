@@ -6,6 +6,7 @@ import NewController from './controllers/NewController'
 import CreateController from './controllers/CreateController'
 import ValidateController from './controllers/ValidateController'
 import MainController from './controllers/MainController'
+import MainTzLibreController from './controllers/MainTzLibreController'
 import SettingController from './controllers/SettingController'
 import UnlockController from './controllers/UnlockController'
 import EncryptController from './controllers/EncryptController'
@@ -36,6 +37,7 @@ app
   .controller('CreateController', CreateController)
   .controller('ValidateController', ValidateController)
   .controller('MainController', MainController)
+  .controller('MainTzLibreController', MainTzLibreController)
   .controller('SettingController', SettingController)
   .controller('UnlockController', UnlockController)
   .controller('EncryptController', EncryptController)

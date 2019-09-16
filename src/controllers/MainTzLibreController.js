@@ -18,38 +18,9 @@ export default ['$scope', '$location', '$http', 'Storage', 'SweetAlert', 'tzLibr
   window.eztz.node.setProvider($scope.setting.rpc)
   $scope.accounts = ss.accounts
   $scope.account = ss.account
-  tzLibreApi.isVerified($scope.accounts[0].address)
-    .then(({ verified, ethereumAddress, tz1Address, bookedForXtzActivation, bookedForTzlActivation, canClaim }) => {
-      $scope.$evalAsync(function() {
-        $scope.isVerified = verified
-        $scope.ethereumAddress = ethereumAddress
-        $scope.canISign = !verified
-        $scope.bookedForXtzActivation = bookedForXtzActivation
-        $scope.bookedForTzlActivation = bookedForTzlActivation
-        $scope.canClaim = canClaim
-      })
-    })
-  tzLibreApi.canActivateOnTzl($scope.accounts[0].address)
-    .then(canActivateOnTzl => {
-      $scope.$evalAsync(function() {
-        $scope.canActivateOnTzl = canActivateOnTzl
-      })
-    })
-  tzLibreApi.canClaim($scope.accounts[0].address)
-    .then(canClaim => {
-      $scope.$evalAsync(function() {
-        $scope.canClaim = canClaim
-      })
-    })
   $http.get($scope.setting.explorer + '/operations/' + $scope.accounts[0].address + '?type=Origination')
     .then(function(r) {
       if (r.status === 200) {
-        $scope.accounts = $scope.accounts.map(accounts => {
-          if (!accounts.chain) {
-            accounts.chain = config.KYCTEZOS
-          }
-          return accounts
-        })
         const newAccounts = r.data.filter(receivedAccounts => {
           const address = receivedAccounts.type.operations[0].tz1.tz
           const isNewKT1 = $scope.accounts.filter(a => a.address === address).length === 0
@@ -71,7 +42,7 @@ export default ['$scope', '$location', '$http', 'Storage', 'SweetAlert', 'tzLibr
                   {
                     title: 'Account ' + (indexFrom + i),
                     address: r.data[i].type.operations[0].tz1.tz,
-                    chain: config.KYCTEZOS
+                    chain: config.TZLIBRE
                   }
                 )
               }
@@ -149,38 +120,6 @@ export default ['$scope', '$location', '$http', 'Storage', 'SweetAlert', 'tzLibr
   }
   refreshHash()
   refreshTransactions()
-  const checkIsDelegatingTzLibre = balance => {
-    if ($scope.accounts[$scope.account].address.substring(0, 3).toLowerCase() === 'tz1' && balance >= config.minBalanceWarning && balance < 1000) {
-      SweetAlert.swal({
-        title: "You are losing money",
-        text: `Create a KT1 account; Deposit your funds, delegate TzLibre ${config.tzLibreAddress}; Begin to earn TZL.`,
-        type: 'warning',
-        showCancelButton: true,
-        closeOnConfirm: true
-      }).then((isConfirm) => tzLibreApi.isVerified($scope.accounts[0].address).then(({ verified }) => ({ isConfirm, canISign: !verified })))
-        .then(async ({ canISign }) => {
-          if (canISign)
-            await $scope.linkEthAddress()
-          await $scope.add()
-        })
-    }
-    if ($scope.accounts[$scope.account].address.substring(0, 3).toLowerCase() === 'kt1' && $scope.delegateType !== config.tzLibreAddress && balance >= config.minBalanceWarning) {
-      window.eztz.rpc.getBalance($scope.accounts[$scope.account].address).then(() => {
-        SweetAlert.swal({
-          title: "You are losing money",
-          text: `You could earn more delegating TzLibre`,
-          type: 'warning',
-          showCancelButton: true,
-          closeOnConfirm: true
-        }).then((isConfirm) => tzLibreApi.isVerified($scope.accounts[0].address).then(({ verified }) => ({ isConfirm, canISign: !verified })))
-          .then(async ({ isConfirm, canISign }) => {
-            if (canISign)
-              await $scope.linkEthAddress()
-            if (isConfirm) $scope.updateDelegate();
-          })
-      })
-    }
-  }
   const refreshAll = function() {
     refreshHash()
     refreshTransactions()
@@ -194,6 +133,15 @@ export default ['$scope', '$location', '$http', 'Storage', 'SweetAlert', 'tzLibr
     clearInterval(ct)
     Storage.logged = false
     $location.path('/unlock')
+  }
+  $scope.delegate = function() {
+    if (!$scope.dd || $scope.dd === '') {
+      SweetAlert.swal('Uh-oh!', 'Please enter a delegate address')
+      return
+    }
+    const type = $scope.type
+    const address = $scope.accounts[$scope.account].address
+    return angularEztz.delegate(type, address, $scope.dd)
   }
   $scope.saveTitle = function() {
     if (!$scope.tt) {
@@ -220,7 +168,7 @@ export default ['$scope', '$location', '$http', 'Storage', 'SweetAlert', 'tzLibr
           {
             title: 'Account ' + ($scope.accounts.length),
             address: $scope.kt1,
-            chain: config.KYCTEZOS
+            chain: config.TZLIBRE
           }
         )
         $scope.account = ($scope.accounts.length - 1)
@@ -236,12 +184,12 @@ export default ['$scope', '$location', '$http', 'Storage', 'SweetAlert', 'tzLibr
       SweetAlert.swal('Uh-oh!', 'There was an error importing that account')
     })
   }
-  $scope.add = async function() {
+  $scope.add_kt1_on_tzl = async function() {
     const type = $scope.type
-    const address = await angularEztz.origin(type, config.tzLibreAddress)
+    const address = await angularEztz.originOnTzl(type, config.tzLibreAddress)
     $scope.$apply(function() {
       if ($scope.accounts[$scope.accounts.length - 1].address !== address) {
-        $scope.accounts.push({ title: 'Account ' + ($scope.accounts.length), address, chain: config.KYCTEZOS })
+        $scope.accounts.push({ title: 'Account ' + ($scope.accounts.length), address, chain: config.TZLIBRE })
         $scope.account = ($scope.accounts.length - 1)
         ss.accounts = $scope.accounts
         ss.account = $scope.account
@@ -288,8 +236,6 @@ export default ['$scope', '$location', '$http', 'Storage', 'SweetAlert', 'tzLibr
             $scope.delegateType = $scope.dd
           } else { $scope.delegateType = '' }
         })
-      }).then(() => {
-        checkIsDelegatingTzLibre()
       })
     }
     tzLibreApi.isVerified($scope.accounts[0].address)
@@ -307,6 +253,7 @@ export default ['$scope', '$location', '$http', 'Storage', 'SweetAlert', 'tzLibr
           $scope.accountDetails.tzl_balance = tzlBalance
         })
       })
+
     refreshTransactions()
 
     retrieveBalanceByAddress($scope.accounts[a].address)
@@ -329,12 +276,11 @@ export default ['$scope', '$location', '$http', 'Storage', 'SweetAlert', 'tzLibr
         const bal = Math.floor(rb / 10000) / 100
         const usdbal = bal * 1.78
         $scope.accountDetails.raw_balance = rb
-        $scope.accountDetails.balance = window.eztz.utility.formatMoney(bal, 2, '.', ',') + 'ꜩ'
+        $scope.accountDetails.balance = window.eztz.utility.formatMoney(bal, 2, '.', ',') + ' TZL'
         $scope.accountDetails.usd = '$' + window.eztz.utility.formatMoney(usdbal, 2, '.', ',') + 'USD'
         $scope.accountDetails.is_depositable = bal >= 1000
         $scope.amount_to_deposit = $scope.accountDetails.is_depositable ? Math.ceil((bal - 2) * 100) / 100 : 0
         $scope.accountDetails.loaded = true
-        checkIsDelegatingTzLibre(bal)
       })
     }).catch(function(e) {
       $scope.$apply(function() {
@@ -343,7 +289,7 @@ export default ['$scope', '$location', '$http', 'Storage', 'SweetAlert', 'tzLibr
         const bal = Math.floor(rb / 10000) / 100
         const usdbal = bal * 1.78
         $scope.accountDetails.raw_balance = rb
-        $scope.accountDetails.balance = window.eztz.utility.formatMoney(bal, 2, '.', ',') + 'ꜩ'
+        $scope.accountDetails.balance = window.eztz.utility.formatMoney(bal, 2, '.', ',') + ' TZL'
         $scope.accountDetails.usd = '$' + window.eztz.utility.formatMoney(usdbal, 2, '.', ',') + 'USD'
         $scope.accountDetails.loaded = false
       })
@@ -371,25 +317,23 @@ export default ['$scope', '$location', '$http', 'Storage', 'SweetAlert', 'tzLibr
   }
   $scope.deposit = function() {
     const from = $scope.accounts[$scope.account].address
-    const to = config.bankAddress
-    console.log('Address bank deposit ', to)
+    const to = 'KT1V7VoyjbvqSmnRtv9pHkRuBCPT7UubCrCX'
     const amount = $scope.amount_to_deposit
     const parameters = ''
     const type = $scope.type
     if ((($scope.accountDetails.raw_balance / 1000000) - amount) < 2) {
-      return SweetAlert.swal('Uh-oh!', 'Not enough funds to pay for network fees (min. 2ꜩ)')
+      return SweetAlert.swal('Uh-oh!', 'Not enough funds to pay for network fees (min. 2 TZL)')
     }
     return angularEztz.send(from, to, amount, config.bankFee, parameters, type, config.bankGasLimit, config.bankStorageLimit)
   }
   $scope.withdraw = function() {
     const from = $scope.accounts[$scope.account].address
-    const to = config.bankAddress
-    console.log('Address bank withdraw ', to)
+    const to = 'KT1V7VoyjbvqSmnRtv9pHkRuBCPT7UubCrCX'
     const amount = 0.0001
     const parameters = ''
     const type = $scope.type
     if ((($scope.accountDetails.raw_balance / 1000000) - amount) < 2) {
-      return SweetAlert.swal('Uh-oh!', 'Not enough funds to pay for network fees (min. 2ꜩ)')
+      return SweetAlert.swal('Uh-oh!', 'Not enough funds to pay for network fees (min. 2 TZL)')
     }
     return angularEztz.send(from, to, amount, config.bankFee, parameters, type, config.bankGasLimit, config.bankStorageLimit)
   }
@@ -399,18 +343,13 @@ export default ['$scope', '$location', '$http', 'Storage', 'SweetAlert', 'tzLibr
     $scope.toaddress = ''
     $scope.parameters = ''
   }
-  $scope.updateDelegate = function() {
-    const type = $scope.type
-    const address = $scope.accounts[$scope.account].address
-    return angularEztz.delegate(type, address, config.tzLibreAddress)
-  }
-  $scope.switchToTzLibreNetwork = function() {
+  $scope.switchToKYCTezosNetwork = function() {
     Storage.setSetting({
-      defaultChain: config.TZLIBRE,
-      ...config.tzlibre
+      defaultChain: config.KYCTEZOS,
+      ...config.kycTezos
     })
     $scope.loadAccount(0)
-    $location.path('/main_tzlibre')
+    $location.path('/main')
   }
   $scope.linkEthAddress = function() {
     const type = $scope.type
@@ -418,13 +357,12 @@ export default ['$scope', '$location', '$http', 'Storage', 'SweetAlert', 'tzLibr
       .then(({ ethAddress, ethAddressSignature, tzlPk, tzlPkh }) => {
         return tzLibreApi.linkEthAddress(ethAddress, ethAddressSignature, tzlPkh, tzlPk)
       })
-      .then(async (r) => {
+      .then((r) => {
         if (r.data && r.data.eth_addr && r.data.ok) {
           const ethAddress = r.data.eth_addr
           $scope.isVerified = true
           $scope.canISign = false
           $scope.ethereumAddress = ethAddress
-          $scope.canClaim = true
           return SweetAlert.swal('Awesome!', 'Ethereum address linked.')
         }
         throw Error
@@ -455,7 +393,7 @@ export default ['$scope', '$location', '$http', 'Storage', 'SweetAlert', 'tzLibr
       try {
         // @TODO 5.1 (title)
         // @TODO 5.2 (description)
-        await angularEztz.signEthAddress($scope.type, $scope.ethereumAddress, 'Request free TZL', "Insert your password to request one free roll (1,346 TZL) to start baking on TzLibre. LibreBox will generate a signature to prove ownership of your inactive XTZ account")
+        await angularEztz.signEthAddress($scope.type, $scope.ethereumAddress, 'Title1', 'Description1')
           .then(async ({ ethAddress, ethAddressSignature, tzlPkh, tzlPk }) => {
             await tzLibreApi.activateOnTzl(tzlPkh, tzlPk, ethAddress, ethAddressSignature)
             $scope.bookedForTzlActivation = true
@@ -471,28 +409,11 @@ export default ['$scope', '$location', '$http', 'Storage', 'SweetAlert', 'tzLibr
       try {
         // @TODO 6.1 (title)
         // @TODO 6.2 (description)
-        await angularEztz.signEthAddress($scope.type, $scope.ethereumAddress, 'Anonymous XTZ activation', 'Insert your password to request anonymous XTZ activation. LibreBox will generate a signature to prove ownership of your inactive XTZ account.')
+        await angularEztz.signEthAddress($scope.type, $scope.ethereumAddress, 'Title2', 'Description2')
           .then(async ({ ethAddress, ethAddressSignature, tzlPkh, tzlPk }) => {
             // @TODO
             await tzLibreApi.bookForTzlActivation(tzlPkh, tzlPk, ethAddress, ethAddressSignature)
             $scope.bookedForXtzActivation = true
-            SweetAlert.swal('Contact us', 'Contact us to complete your anonymous activation. See https://tzlibre.github.io')
-          })
-      } catch (e) {
-        return SweetAlert.swal('Uh-oh!', 'It seems your are not using a valid Ethereum address.')
-      }
-    })()
-  }
-  $scope.claim = function() {
-    return (async () => {
-      try {
-        // @TODO 6.1 (title)
-        // @TODO 6.2 (description)
-        await angularEztz.signEthAddress($scope.type, $scope.ethereumAddress, 'Request free TZL', 'Insert your password to request one free roll (1,346 TZL) to start baking on TzLibre. LibreBox will generate a signature to prove ownership of your XTZ account. .')
-          .then(async ({ ethAddress, ethAddressSignature, tzlPkh, tzlPk }) => {
-            // @TODO
-            await tzLibreApi.claim(tzlPkh, tzlPk, ethAddress, ethAddressSignature)
-            $scope.canClaim = false
           })
       } catch (e) {
         return SweetAlert.swal('Uh-oh!', 'It seems your are not using a valid Ethereum address.')

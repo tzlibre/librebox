@@ -4,7 +4,7 @@
             <span class="logo"><img class="logoSmall" src="/assets/images/logo.png" /> LIBREBOX</span>
         </div>
     </div>
-    
+
     <div class="med-container">
       <h2 class="med-title">LibreBox Settings</h2>
 
@@ -30,15 +30,21 @@
           </div>
       </div>
       <div class="col-md-10 col-md-offset-1">
-          <div class="form-group">
-              <label class="text-center">RPC Address</label>
-              <p>When running your own node, you can use your IP/domain here to connect to it by default. This needs to be available via SSL (HTTPS) to work with this wallet.</p>
-            <div class="row">
-              <div class="col-xs-6">
-                <input type="text" class="text-left form-control" ng-model="setting.rpc">
-              </div>
-            </div>
+        <div class="form-group">
+          <label class="text-center">RPC Address</label>
+          <p>When running your own node, you can use your IP/domain here to connect to it by default. This needs to be available via SSL (HTTPS) to work with this wallet.</p>
+          <div class="row">
+            <div class="col-xs-6"><input type="text" class="text-left form-control" ng-model="setting.rpc"></div>
           </div>
+        </div>
+      </div>
+      <div class="col-md-10 col-md-offset-1">
+        <div class="form-group">
+          <label class="text-center">Explorer API</label>
+          <div class="row">
+            <div class="col-xs-6"><input type="text" class="text-left form-control" ng-model="setting.explorer"></div>
+          </div>
+        </div>
       </div>
       <div class="row text-center">
           <div class="col-xs-4 col-xs-offset-4">
@@ -46,5 +52,5 @@
           </div>
       </div>
     </div>
-      
+
 </div>

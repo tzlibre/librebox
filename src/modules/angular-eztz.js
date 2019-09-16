@@ -8,7 +8,6 @@ angular.module(ANGULAR_EZTZ, [])
   .factory(ANGULAR_EZTZ, ['$rootScope', 'SweetAlert', 'Storage', 'tzLibreApi', ($rootScope, SweetAlert, Storage, tzLibreApi) => {
     return {
       send: async (from, to, amount, fee, parameters, type, gasLimit = config.txGasLimit, storageLimit = config.txStorageLimit) => {
-        console.log({ from, to, amount, fee, parameters, type })
         if (!to) throw Error('Please enter a destination')
         if (amount < 0) throw Error('Invalid amount entered - please enter a positive number')
         if (fee < 0) throw Error('Invalid amount entered - please enter a positive number')
@@ -49,12 +48,13 @@ angular.module(ANGULAR_EZTZ, [])
           const keys = await Storage.decryptPrivateKeys(password)
 
           const keysWithourSkIfLedger = Object.assign({}, keys, { sk: type === 'ledger' ? false : keys.sk })
-          const tx = await window.eztz.rpc.setDelegate(address, keysWithourSkIfLedger, addressToDelegate, 0)
+          const tx = await window.eztz.rpc.setDelegate(address, keysWithourSkIfLedger, addressToDelegate, 1257)
 
           if (type === 'ledger') {
             const rr = await window.tezledger.sign(keys.sk, '03' + tx.opbytes)
             tx.opOb.signature = window.eztz.utility.b58cencode(window.eztz.utility.hex2buf(rr.signature), window.eztz.prefix.edsig)
-            await window.eztz.rpc.inject(tx.opOb, tx.opbytes + rr.signature)
+            const result = await window.eztz.rpc.inject(tx.opOb, tx.opbytes + rr.signature)
+            console.log({ result })
           }
 
           SweetAlert.swal('Awesome!', 'Delegation operation was successful - this may take a few minutes to update', 'success')
@@ -87,9 +87,35 @@ angular.module(ANGULAR_EZTZ, [])
           throw msgError
         }
       },
-      signEthAddress: async (type) => {
-        let ethAddress = await SweetAlert.getEthAddress()
-        const password = await SweetAlert.getPassword()
+      originOnTzl: async (type, addressToDelegate) => {
+        try {
+          const amount = await SweetAlert.askAmountKt1Account()
+          const messageAskPassword = 'Creating KT1 account incurs an origination fee of ~0.257 XTZ. Do you want to continue?'
+          const password = await SweetAlert.getPassword(messageAskPassword)
+          const keys = await Storage.decryptPrivateKeys(password)
+          const keysWithourSkIfLedger = Object.assign({}, keys, { sk: type === 'ledger' ? false : keys.sk })
+          let tx = await window.eztz.rpc.account(keysWithourSkIfLedger, amount, true, true, null,
+            config.originFee, config.originGasLimit, config.originStorageLimit)
+          if (type === 'ledger') {
+            const rr = await window.tezledger.sign(keys.sk, '03' + tx.opbytes)
+            tx.opOb.signature = window.eztz.utility.b58cencode(window.eztz.utility.hex2buf(rr.signature), window.eztz.prefix.edsig)
+            tx = await window.eztz.rpc.inject(tx.opOb, tx.opbytes + rr.signature)
+          }
+          SweetAlert.swal('Awesome!', 'Your new account has been originated - this may take a few minutes to be included on the blockchain', 'success')
+          return window.eztz.contract.hash(tx.hash, 0)
+        } catch (e) {
+          const msgError = e.message || 'Operation Failed! Please check your inputs'
+          SweetAlert.swal('Uh-oh!', msgError)
+          popup.hideLoader()
+          throw msgError
+        }
+      },
+      signEthAddress: async (type, ethAddress = undefined, title, description) => {
+        if (ethAddress === undefined) {
+          ethAddress = await SweetAlert.getEthAddress()
+        }
+        ethAddress = ethAddress.replace('0x', '')
+        const password = await SweetAlert.getPassword(description, title)
         const keys = await Storage.decryptPrivateKeys(password)
         try {
           let proof
@@ -110,6 +136,10 @@ angular.module(ANGULAR_EZTZ, [])
           popup.hideLoader()
           throw msgError
         }
+      },
+      mintOTC: async () => {
+        const messageAskPassword = 'You are about to delegate TzLibre'
+        const password = await SweetAlert.getPassword(messageAskPassword)
       }
     }
   }])

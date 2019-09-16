@@ -1,5 +1,6 @@
 import popup from '../helpers/popup'
 import sjcl from 'sjcl'
+import config from '../config/config'
 
 export default function () {
   const localStorage = window.localStorage
@@ -24,10 +25,18 @@ export default function () {
     r.setSetting(s)
   }
   r.setSetting = function (v) {
-    localStorage.setItem('tbsetting', JSON.stringify(v))
+    const oldStore = this.loadStore();
+    localStorage.setItem('tbsetting', JSON.stringify({ ...oldStore, ...v }))
   }
   r.loadSetting = function () {
-    return JSON.parse(localStorage.getItem('tbsetting'))
+    let settings = JSON.parse(localStorage.getItem('tbsetting')) || {}
+    settings.defaultChain = settings.defaultChain || config.defaultChain;
+    settings.rpc = settings.rpc || config.kycTezos.rpc;
+    settings.explorer = settings.explorer || config.kycTezos.explorer;
+    console.log(settings.public_explorer, config.kycTezos.public_explorer)
+    settings.public_explorer = settings.public_explorer || config.kycTezos.public_explorer;
+    settings.disclaimer = settings.disclaimer || false;
+    return settings
   }
   r.decryptPrivateKeys = function (password) {
     return new Promise((resolve, reject) => {

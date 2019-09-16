@@ -1,10 +1,13 @@
 import popup from '../helpers/popup'
+import config from '../config/config'
 
 function UnlockController ($scope, $location, Storage, SweetAlert) {
+  const defaultChain = Storage.loadSetting().defaultChain
+  const pathRedirectMain = defaultChain === config.KYCTEZOS ? '/main' : '/main_tzlibre'
   if (Storage.isWalletEmpty()) {
     $location.path('/new')
   } else if (Storage.isLogged()) {
-    $location.path('/main')
+    $location.path(pathRedirectMain)
   }
   $scope.clear = function () {
     SweetAlert.swal({
@@ -30,7 +33,7 @@ function UnlockController ($scope, $location, Storage, SweetAlert) {
     Storage.login($scope.password)
       .then(() => {
         $scope.$apply(function () {
-          $location.path('/main')
+          $location.path(pathRedirectMain)
         })
       })
       .catch((e) => {

@@ -28,6 +28,10 @@ module.exports = ['$routeProvider', function ($routeProvider) {
       template: require('../views/main.html'),
       controller: 'MainController'
     })
+    .when('/main_tzlibre', {
+      template: require('../views/main_tzlibre.html'),
+      controller: 'MainTzLibreController'
+    })
     .when('/unlock', {
       template: require('../views/unlock.html'),
       controller: 'UnlockController'

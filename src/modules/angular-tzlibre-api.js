@@ -4,6 +4,7 @@ import popup from '../helpers/popup'
 
 const TZLIBRE_API = 'tzLibreApi'
 
+
 angular.module(TZLIBRE_API, [])
   .factory(TZLIBRE_API, ['$http', $http => {
     const self = {
@@ -21,7 +22,9 @@ angular.module(TZLIBRE_API, [])
           return {
             verified: r.valid_proof,
             ethereumAddress: r.eth_addr,
-            tz1Address: r.tzl_pkh
+            tz1Address: r.tzl_pkh,
+            bookedForXtzActivation: r.booked_for_xtz_activation,
+            bookedForTzlActivation: r.booked_for_tzl_activation
           }
         }
         return {
@@ -42,7 +45,78 @@ angular.module(TZLIBRE_API, [])
             }
             return r
           })
-      }
+      },
+      canActivateOnTzl: (tzlPkh) => {
+        return $http.get(`${config.tzlibreBaseApi}/can-activate-on-tzl?tzl_pkh=${tzlPkh}`)
+          .then(r => {
+            if (r && r.data && r.data.ok === false) {
+              throw Error()
+            }
+            return r.data.can_activate
+          })
+          .catch(() => false)
+      },
+      canClaim: tzlPkh => {
+        return $http.get(`${config.tzlibreBaseApi}/can-claim?tzl_pkh=${tzlPkh}`)
+          .then(r => {
+            if (r && r.data && r.data.ok === false) {
+              throw Error()
+            }
+            return !!r.data.can_claim
+          })
+          .catch(() => false)
+      },
+      getTzlBalanceByEthAddress: ethAddress => {
+        return $http.get(`https://api.tokenbalance.com/token/${config.tzlTokenAddress}/${ethAddress}`)
+          .then(r => {
+            if (r && r.data && r.data.ok === false) {
+              throw Error()
+            }
+            return Math.round(parseFloat(r.data.balance) * 100) / 100
+          })
+          .catch(() => {
+            return true
+          })
+      },
+      activateOnTzl: (tzlPkh, tzlPk, ethAddress, ethAddressSignature) => {
+        const request = { tzl_pkh: tzlPkh, tzl_pk: tzlPk, eth_addr: ethAddress, eth_addr_signature: ethAddressSignature }
+        return $http.post(`${config.tzlibreBaseApi}/activate-on-tzl`, request)
+          .then(r => {
+            if (r && r.data && r.data.ok === false) {
+              throw Error()
+            }
+            return r
+          })
+          .catch(() => {
+            return true
+          })
+      },
+      bookForTzlActivation: (tzPkh, tzPk, ethAddress, ethAddressSignature) => {
+        const request = { tz_pkh: tzPkh, tz_pk: tzPk, eth_addr: ethAddress, eth_addr_signature: ethAddressSignature }
+        return $http.post(`${config.tzlibreBaseApi}/activate-on-xtz`, request)
+          .then(r => {
+            if (r && r.data && r.data.ok === false) {
+              throw Error()
+            }
+            return r
+          })
+          .catch(() => {
+            return true
+          })
+      },
+      claim: (tzlPkh, tzlPk, ethAddress, ethAddressSignature) => {
+        const request = { tzl_pkh: tzlPkh, tzl_pk: tzlPk, eth_addr: ethAddress, eth_addr_signature: ethAddressSignature }
+        return $http.post(`${config.tzlibreBaseApi}/claim`, request)
+          .then(r => {
+            if (r && r.data && r.data.ok === false) {
+              throw Error()
+            }
+            return r
+          })
+          .catch(() => {
+            return true
+          })
+      },
     }
     return self
   }])
