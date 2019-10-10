@@ -35,6 +35,32 @@ angular.module('tzlibre.ngSweetAlert', [])
         },
         buttons: [true, 'Confirm']
       }),
+      askAmountTZLToSwap: async () => {
+        const amount = await self.swal({
+          title: 'Swap: native -> ERC-20',
+          text: 'Enter the amount of native TZL coins to swap for ERC-20 TZL tokens',
+          content: {
+            element: 'input',
+            attributes: { placeholder: 'Amount', type: 'number' }
+          },
+          buttons: [true, true]
+        })
+        if (!amount) throw Error('Amount not valid')
+        return parseFloat(amount)
+      },
+      askAmountWTZLToSwap: async () => {
+        const amount = await self.swal({
+          title: 'Swap: ERC-20 -> native',
+          text: 'Enter the amount of ERC-20 TZL tokens to swap for native TZL coins',
+          content: {
+            element: 'input',
+            attributes: { placeholder: 'Amount', type: 'number' }
+          },
+          buttons: [true, true]
+        })
+        if (!amount) throw Error('Amount not valid')
+        return parseFloat(amount)
+      },
       askAmountOTCBuy: async () => {
         const amount = await self.swal({
           title: 'Mint OTC',
@@ -66,7 +92,7 @@ angular.module('tzlibre.ngSweetAlert', [])
         text: description || '',
         content: {
           element: 'input',
-          attributes: { placeholder: 'Type your eth address', type: 'text' }
+          attributes: { placeholder: 'Enter your Ethereum address', type: 'text' }
         },
         buttons: [true, 'Confirm']
       }).then(ethAddress => {

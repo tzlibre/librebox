@@ -6,6 +6,11 @@ export default {
   tzlibreBaseApi: 'https://www.tzlibre.io/api/v1',
   tzLibreAddress: 'tz1iDu3tHhf7H4jyXk6rGV4FNUsMqQmRkwLp',
   bankAddress: 'KT1V7VoyjbvqSmnRtv9pHkRuBCPT7UubCrCX',
+
+  // libre-escrow
+  eth_escrow_address: '0x5B4FcdbdE01C6BB14Faaaa45C49740ef95bCBdB3',
+  tzl_escrow_address: 'KT1TMZPtAdrGEdcJsY2Jw7S4tFiLLHhCCdac',
+
   minBalanceWarning: 100,
   KYCTEZOS,
   TZLIBRE,

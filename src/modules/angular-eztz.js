@@ -10,9 +10,9 @@ angular.module(ANGULAR_EZTZ, [])
       send: async (from, to, amount, fee, parameters, type, gasLimit = config.txGasLimit, storageLimit = config.txStorageLimit) => {
         if (!to) throw Error('Please enter a destination')
         if (amount < 0) throw Error('Invalid amount entered - please enter a positive number')
-        if (fee < 0) throw Error('Invalid amount entered - please enter a positive number')
+        if (fee < 0) throw Error('Invalid fee entered - please enter a positive number')
         if (amount !== parseFloat(amount)) throw Error('Invalid amount entered - please enter a valid number')
-        if (fee !== parseFloat(fee)) throw Error('Invalid amount entered - please enter a valid number')
+        if (fee !== parseFloat(fee)) throw Error('Invalid fee entered - please enter a valid number')
         try {
           let messageAskPassword = `You are about to send ${amount} XTZ to ${to}  - this transaction is irreversible.`
           if (type === 'ledger') {

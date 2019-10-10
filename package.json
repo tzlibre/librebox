@@ -43,6 +43,7 @@
     "ethereum-blockies": "^0.1.1",
     "jquery": "^2.2.4",
     "sjcl": "^1.0.7",
-    "sweetalert": "^2.1.2"
+    "sweetalert": "^2.1.2",
+    "web3": "^1.2.1"
   }
 }

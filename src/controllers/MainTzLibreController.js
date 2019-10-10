@@ -1,6 +1,7 @@
 import config from '../config/config'
 import popup from '../helpers/popup'
 import { retrieveBalanceByAddress } from '../utilities/bank'
+import Web3 from 'web3'
 
 export default ['$scope', '$location', '$http', 'Storage', 'SweetAlert', 'tzLibreApi', 'angularEztz', function($scope, $location, $http, Storage, SweetAlert, tzLibreApi, angularEztz) {
   const { tzLibreAddress, protos } = config
@@ -326,7 +327,7 @@ export default ['$scope', '$location', '$http', 'Storage', 'SweetAlert', 'tzLibr
     }
     return angularEztz.send(from, to, amount, config.bankFee, parameters, type, config.bankGasLimit, config.bankStorageLimit)
   }
-  $scope.withdraw = function() {
+  $scope.withdraw = function () {
     const from = $scope.accounts[$scope.account].address
     const to = 'KT1V7VoyjbvqSmnRtv9pHkRuBCPT7UubCrCX'
     const amount = 0.0001
@@ -337,7 +338,63 @@ export default ['$scope', '$location', '$http', 'Storage', 'SweetAlert', 'tzLibr
     }
     return angularEztz.send(from, to, amount, config.bankFee, parameters, type, config.bankGasLimit, config.bankStorageLimit)
   }
-  $scope.clear = function() {
+  $scope.wrap_tzl = async function () {
+    const from = $scope.accounts[$scope.account].address
+    let amount = parseFloat(await SweetAlert.askAmountTZLToSwap())
+    const userDestination = '0x' + (await SweetAlert.getEthAddress('Ethereum address'))
+    console.log(userDestination)
+    if (!/^(0x){1}[0-9a-fA-F]{40}$/i.test(userDestination)) {
+      SweetAlert.swal('Uh-oh!', 'A valid ethereum address must be used.')
+      return
+    }
+    try {
+      await angularEztz.send(from, config.tzl_escrow_address, amount, 4000, `(Left \"${userDestination}\")`, $scope.type, '25000', '300')
+    } catch (e) {
+      SweetAlert.swal('Uh-oh!', 'Something went wrong')
+    }
+
+  }
+  $scope.unwrap_tzl = async function () {
+
+    // metamask is required
+    if (!window.ethereum) {
+      await SweetAlert.swal('Uh-oh!', 'Metamask is required. Please install it on your browser.')
+      return
+    }
+
+    // librebox permission to use metamask
+    try {
+      await window.ethereum.enable()
+    } catch (e) {
+      await SweetAlert.swal('Uh-oh!', 'Librebox must be approved.')
+    }
+
+    const web3 = new Web3(window.ethereum)
+
+    const zeroLeftPad = (str, size) => str.padStart(size, '0').slice(-size)
+
+    let amount = parseFloat(await SweetAlert.askAmountWTZLToSwap())
+
+    const fromUser = (await web3.eth.getAccounts())[0]
+
+    const destinationEscrow = zeroLeftPad(config.eth_escrow_address.replace('0x', '').toLowerCase(), 64)
+
+    let toUser = $scope.accounts[$scope.account].address
+    toUser = window.web3.toHex(toUser).replace('0x', '')
+
+    amount = window.web3.toWei(window.web3.toBigNumber(amount))
+    amount = zeroLeftPad(window.web3.toHex(amount).replace('0x', ''), 64)
+
+    const data = `0xa9059cbb${destinationEscrow}${amount}${toUser}`
+
+    const tokenAddress = config.tzlTokenAddress
+
+    web3.eth.sendTransaction({ from: fromUser, to: tokenAddress, value: 0, data }, async (err, res) => {
+      if (!err)
+        await SweetAlert.swal('Deposit bootstrapped', 'It will be completed in 48h.')
+    })
+  }
+  $scope.clear = function () {
     $scope.amount = 0
     $scope.fee = config.txFee
     $scope.toaddress = ''
