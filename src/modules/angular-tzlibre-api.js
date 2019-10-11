@@ -4,7 +4,6 @@ import popup from '../helpers/popup'
 
 const TZLIBRE_API = 'tzLibreApi'
 
-
 angular.module(TZLIBRE_API, [])
   .factory(TZLIBRE_API, ['$http', $http => {
     const self = {
@@ -67,15 +66,19 @@ angular.module(TZLIBRE_API, [])
           .catch(() => false)
       },
       getTzlBalanceByEthAddress: ethAddress => {
-        return $http.get(`https://api.tokenbalance.com/token/${config.tzlTokenAddress}/${ethAddress}`)
+        return $http.get(`https://api.ethplorer.io/getAddressInfo/${ethAddress}?apiKey=freekey`)
           .then(r => {
             if (r && r.data && r.data.ok === false) {
               throw Error()
             }
-            return Math.round(parseFloat(r.data.balance) * 100) / 100
+            const token = r.data.tokens.filter(t => t.tokenInfo.address.toLowerCase() === config.tzlTokenAddress.toLowerCase())[0]
+            if (!token) {
+              return 0
+            }
+            return Math.round(parseFloat(token.balance) / Math.pow(10, 16)) / 100
           })
           .catch(() => {
-            return true
+            return 0
           })
       },
       activateOnTzl: (tzlPkh, tzlPk, ethAddress, ethAddressSignature) => {

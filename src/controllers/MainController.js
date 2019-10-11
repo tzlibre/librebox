@@ -20,27 +20,31 @@ export default ['$scope', '$location', '$http', 'Storage', 'SweetAlert', 'tzLibr
   $scope.account = ss.account
   tzLibreApi.isVerified($scope.accounts[0].address)
     .then(({ verified, ethereumAddress, tz1Address, bookedForXtzActivation, bookedForTzlActivation, canClaim }) => {
-      $scope.$evalAsync(function() {
+      $scope.$evalAsync(function () {
         $scope.isVerified = verified
         $scope.ethereumAddress = ethereumAddress
         $scope.canISign = !verified
         $scope.bookedForXtzActivation = bookedForXtzActivation
         $scope.bookedForTzlActivation = bookedForTzlActivation
-        $scope.canClaim = canClaim
       })
     })
   tzLibreApi.canActivateOnTzl($scope.accounts[0].address)
     .then(canActivateOnTzl => {
       $scope.$evalAsync(function() {
+        console.log({ canActivateOnTzl })
         $scope.canActivateOnTzl = canActivateOnTzl
       })
     })
-  tzLibreApi.canClaim($scope.accounts[0].address)
-    .then(canClaim => {
-      $scope.$evalAsync(function() {
-        $scope.canClaim = canClaim
+  const refreshCanClaim = async () => {
+    tzLibreApi.canClaim($scope.accounts[0].address)
+      .then(canClaim => {
+        $scope.$evalAsync(function () {
+          $scope.canClaim = canClaim
+          console.log(canClaim)
+        })
       })
-    })
+  }
+  refreshCanClaim()
   $http.get($scope.setting.explorer + '/operations/' + $scope.accounts[0].address + '?type=Origination')
     .then(function(r) {
       if (r.status === 200) {
@@ -303,7 +307,7 @@ export default ['$scope', '$location', '$http', 'Storage', 'SweetAlert', 'tzLibr
         return 0
       })
       .then(tzlBalance => {
-        $scope.$evalAsync(function() {
+        $scope.$evalAsync(function () {
           $scope.accountDetails.tzl_balance = tzlBalance
         })
       })
@@ -418,17 +422,17 @@ export default ['$scope', '$location', '$http', 'Storage', 'SweetAlert', 'tzLibr
       .then(({ ethAddress, ethAddressSignature, tzlPk, tzlPkh }) => {
         return tzLibreApi.linkEthAddress(ethAddress, ethAddressSignature, tzlPkh, tzlPk)
       })
-      .then(async (r) => {
+      .then(async r => {
         if (r.data && r.data.eth_addr && r.data.ok) {
           const ethAddress = r.data.eth_addr
           $scope.isVerified = true
           $scope.canISign = false
           $scope.ethereumAddress = ethAddress
-          $scope.canClaim = true
           return SweetAlert.swal('Awesome!', 'Ethereum address linked.')
         }
         throw Error
       })
+      .then(() => refreshCanClaim())
       .catch((e) => {
         return SweetAlert.swal('Uh-oh!', 'It seems your are not using a valid Ethereum address.')
       })
@@ -483,17 +487,13 @@ export default ['$scope', '$location', '$http', 'Storage', 'SweetAlert', 'tzLibr
       }
     })()
   }
-  $scope.claim = function() {
+  $scope.claim = function () {
     return (async () => {
       try {
-        // @TODO 6.1 (title)
-        // @TODO 6.2 (description)
         await angularEztz.signEthAddress($scope.type, $scope.ethereumAddress, 'Request free TZL', 'Insert your password to request one free roll (1,346 TZL) to start baking on TzLibre. LibreBox will generate a signature to prove ownership of your XTZ account. .')
-          .then(async ({ ethAddress, ethAddressSignature, tzlPkh, tzlPk }) => {
-            // @TODO
-            await tzLibreApi.claim(tzlPkh, tzlPk, ethAddress, ethAddressSignature)
-            $scope.canClaim = false
-          })
+          .then(async ({ ethAddress, ethAddressSignature, tzlPkh, tzlPk }) =>
+            tzLibreApi.claim(tzlPkh, tzlPk, ethAddress, ethAddressSignature))
+          .then(() => refreshCanClaim())
       } catch (e) {
         return SweetAlert.swal('Uh-oh!', 'It seems your are not using a valid Ethereum address.')
       }
