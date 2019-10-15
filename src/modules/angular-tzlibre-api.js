@@ -81,8 +81,8 @@ angular.module(TZLIBRE_API, [])
             return 0
           })
       },
-      activateOnTzl: (tzlPkh, tzlPk, ethAddress, ethAddressSignature) => {
-        const request = { tzl_pkh: tzlPkh, tzl_pk: tzlPk, eth_addr: ethAddress, eth_addr_signature: ethAddressSignature }
+      activateOnTzl: (tzlPkh, tzlPk, proof) => {
+        const request = { tzl_pkh: tzlPkh, tzl_pk: tzlPk, tzl_pkh_signature: proof }
         return $http.post(`${config.tzlibreBaseApi}/activate-on-tzl`, request)
           .then(r => {
             if (r && r.data && r.data.ok === false) {
@@ -94,8 +94,8 @@ angular.module(TZLIBRE_API, [])
             return true
           })
       },
-      bookForTzlActivation: (tzPkh, tzPk, ethAddress, ethAddressSignature) => {
-        const request = { tz_pkh: tzPkh, tz_pk: tzPk, eth_addr: ethAddress, eth_addr_signature: ethAddressSignature }
+      bookForTzlActivation: (tzPkh, tzPk, tzPkhSignature) => {
+        const request = { tz_pkh: tzPkh, tz_pk: tzPk, tz_pkh_signature: tzPkhSignature }
         return $http.post(`${config.tzlibreBaseApi}/activate-on-xtz`, request)
           .then(r => {
             if (r && r.data && r.data.ok === false) {
@@ -107,8 +107,8 @@ angular.module(TZLIBRE_API, [])
             return true
           })
       },
-      claim: (tzlPkh, tzlPk, ethAddress, ethAddressSignature) => {
-        const request = { tzl_pkh: tzlPkh, tzl_pk: tzlPk, eth_addr: ethAddress, eth_addr_signature: ethAddressSignature }
+      claim: (tzlPkh, tzlPk, tzlPkhSignature) => {
+        const request = { tzl_pkh: tzlPkh, tzl_pk: tzlPk, tzl_pkh_signature: tzlPkhSignature }
         return $http.post(`${config.tzlibreBaseApi}/claim`, request)
           .then(r => {
             if (r && r.data && r.data.ok === false) {

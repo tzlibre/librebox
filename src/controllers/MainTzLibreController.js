@@ -342,7 +342,6 @@ export default ['$scope', '$location', '$http', 'Storage', 'SweetAlert', 'tzLibr
     const from = $scope.accounts[$scope.account].address
     let amount = parseFloat(await SweetAlert.askAmountTZLToSwap())
     const userDestination = '0x' + (await SweetAlert.getEthAddress('Ethereum address'))
-    console.log(userDestination)
     if (!/^(0x){1}[0-9a-fA-F]{40}$/i.test(userDestination)) {
       SweetAlert.swal('Uh-oh!', 'A valid ethereum address must be used.')
       return

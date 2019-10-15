@@ -71,7 +71,7 @@
                     </button>
                 </h5>
             </div>
-            <div ng-if="canISign && type !== 'ledger' && !canActivateOnTzl" class="btn-and-tip">
+            <div ng-if="canISign && type !== 'ledger'" class="btn-and-tip">
                 <a ng-click="linkEthAddress()" class="btn btn-success">Link Ethereum Address</a>
             </div>
             <div ng-if="canClaim && type !== 'ledger'" class="btn-and-tip">
@@ -85,7 +85,7 @@
             </div>
             <div ng-if="canActivateOnTzl && !bookedForTzlActivation && type !== 'ledger'" class="btn-and-tip">
                 <!-- @TODO 4.1 -->
-                <a ng-click="activateTZL()" class="btn btn-success">Request free TZL</a>
+                <a ng-click="activateTZL()" class="btn btn-success">Request free roll</a>
                 <!-- @TODO 4.2 -->
                 <i class="leftIcon fas fa-question-circle" data-toggle="tooltip" data-placement="right" title="" tooltip="" data-original-title="Get one roll (1,346 TZL) for free to start baking on TzLibre"></i>
             </div>

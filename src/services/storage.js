@@ -33,7 +33,6 @@ export default function () {
     settings.defaultChain = settings.defaultChain || config.defaultChain;
     settings.rpc = settings.rpc || config.kycTezos.rpc;
     settings.explorer = settings.explorer || config.kycTezos.explorer;
-    console.log(settings.public_explorer, config.kycTezos.public_explorer)
     settings.public_explorer = settings.public_explorer || config.kycTezos.public_explorer;
     settings.disclaimer = settings.disclaimer || false;
     return settings

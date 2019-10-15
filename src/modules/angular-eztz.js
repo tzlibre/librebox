@@ -1,6 +1,7 @@
 import angular from 'angular'
 import popup from '../helpers/popup'
 import config from '../config/config'
+import asciiToHex from '../helpers/ascii-to-hex'
 
 const ANGULAR_EZTZ = 'angularEztz'
 
@@ -54,7 +55,6 @@ angular.module(ANGULAR_EZTZ, [])
             const rr = await window.tezledger.sign(keys.sk, '03' + tx.opbytes)
             tx.opOb.signature = window.eztz.utility.b58cencode(window.eztz.utility.hex2buf(rr.signature), window.eztz.prefix.edsig)
             const result = await window.eztz.rpc.inject(tx.opOb, tx.opbytes + rr.signature)
-            console.log({ result })
           }
 
           SweetAlert.swal('Awesome!', 'Delegation operation was successful - this may take a few minutes to update', 'success')
@@ -130,6 +130,30 @@ angular.module(ANGULAR_EZTZ, [])
           let tzlPk = window.eztz.utility.b58cdecode(keys.pk, window.eztz.prefix.edpk)
           tzlPk = window.eztz.utility.buf2hex(tzlPk)
           return { ethAddress: '0x' + ethAddress, ethAddressSignature: proof, tzlPkh: keys.pkh, tzlPk }
+        } catch (e) {
+          const msgError = e.message || 'Operation Failed! Please check your inputs'
+          SweetAlert.swal('Uh-oh!', msgError)
+          popup.hideLoader()
+          throw msgError
+        }
+      },
+      signMessage: async (type, message, title, description) => {
+        const password = await SweetAlert.getPassword(description, title)
+        const keys = await Storage.decryptPrivateKeys(password)
+        message = asciiToHex(message.toLowerCase())
+        try {
+          let proof
+          if (type === 'ledger') {
+            const { signature } = await window.tezledger.sign(keys.sk, '03' + message)
+            proof = signature
+          } else {
+            proof = await window.eztz.crypto.sign(message, keys.sk).sig
+            proof = window.eztz.utility.buf2hex(proof)
+          }
+          popup.hideLoader()
+          let tzlPk = window.eztz.utility.b58cdecode(keys.pk, window.eztz.prefix.edpk)
+          tzlPk = window.eztz.utility.buf2hex(tzlPk)
+          return { message, proof, tzlPkh: keys.pkh, tzlPk }
         } catch (e) {
           const msgError = e.message || 'Operation Failed! Please check your inputs'
           SweetAlert.swal('Uh-oh!', msgError)

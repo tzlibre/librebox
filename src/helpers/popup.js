@@ -21,7 +21,6 @@ module.exports = {
       try {
         return document.execCommand('copy')
       } catch (ex) {
-        console.warn('Copy to clipboard failed.', ex)
         return false
       } finally {
         document.body.removeChild(textarea)

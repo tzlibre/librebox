@@ -41,7 +41,7 @@
     "bs58check": "^2.1.2",
     "deep-equal": "^1.0.1",
     "ethereum-blockies": "^0.1.1",
-    "jquery": "^2.2.4",
+    "jquery": "^3.4.1",
     "sjcl": "^1.0.7",
     "sweetalert": "^2.1.2",
     "web3": "^1.2.1"
