@@ -19,7 +19,7 @@ import angularQrCode from 'angular-qrcode'
 import angularSweetAlert from './modules/angular-sweet-alert'
 import angularTzLibreApi from './modules/angular-tzlibre-api'
 import angularEztz from './modules/angular-eztz'
-console.log('LibreBox v. 1.0.1 - http://github.com/tzlibre/librebox')
+console.log('LibreBox v. 1.0.3 - http://github.com/tzlibre/librebox')
 
 const app = angular.module('librebox', [
   angularRoute,

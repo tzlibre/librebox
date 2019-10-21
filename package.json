@@ -1,6 +1,6 @@
 {
   "name": "librebox.github.io",
-  "version": "1.0.1",
+  "version": "1.0.3",
   "description": "This is the official repo for the LibreBox web wallet.",
   "private": true,
   "scripts": {

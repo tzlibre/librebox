@@ -32,10 +32,18 @@ export default function () {
     let settings = JSON.parse(localStorage.getItem('tbsetting')) || {}
     settings.defaultChain = settings.defaultChain || config.defaultChain;
     settings.rpc = settings.rpc || config.kycTezos.rpc;
-    settings.explorer = settings.explorer || config.kycTezos.explorer;
-    if (/tzscan/.test(settings.public_explorer)) {
+    if (/tzscan/.test(settings.explorer) || /tzscan/.test(settings.public_explorer)) {
+      settings.explorer = config.kycTezos.explorer;
       settings.public_explorer = config.kycTezos.public_explorer;
+      localStorage.setItem('tbsetting', JSON.stringify({
+        ...settings,
+        ...{
+          explorer: config.kycTezos.explorer,
+          public_explorer: config.kycTezos.public_explorer
+        }
+      }))
     }
+    settings.explorer = settings.explorer || config.kycTezos.explorer;
     settings.public_explorer = settings.public_explorer || config.kycTezos.public_explorer;
     settings.disclaimer = settings.disclaimer || false;
     return settings
