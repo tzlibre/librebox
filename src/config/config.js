@@ -18,7 +18,7 @@ export default {
   kycTezos: {
     rpc: 'https://mainnet.tezrpc.me',
     explorer: 'https://mystique.tzkt.io/v3',
-    public_explorer: 'https://tzscan.io'
+    public_explorer: 'https://tezos.id'
   },
   tzlibre: {
     rpc: 'https://rpc.tzlibre.io',

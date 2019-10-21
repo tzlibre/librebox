@@ -3,7 +3,6 @@ import popup from '../helpers/popup'
 import { retrieveBalanceByAddress } from '../utilities/bank'
 
 export default ['$scope', '$location', '$http', 'Storage', 'SweetAlert', 'tzLibreApi', 'angularEztz', function($scope, $location, $http, Storage, SweetAlert, tzLibreApi, angularEztz) {
-  console.log('v. 1.0.0 (Babylon upgrade)')
   const { tzLibreAddress, protos } = config
   const ss = Storage.loadStore()
   if (Storage.isWalletEmpty()) {
