@@ -8,7 +8,7 @@ export const retrieveBalanceByAddress = (address) => fetch(
     'mode': 'cors'
   })
   .then(r => r.json())
-  .then(data => data.args[1].args[1].args[1].args[1].args[1].args[1].args[1].args[0])
+  .then(data => data.args[1].args[1].args[1].args[1].args[1].args[1].args[1].args[1].args[0])
   .then(list => {
     let filtered = list
       .map(l => ({

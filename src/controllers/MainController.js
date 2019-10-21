@@ -3,6 +3,7 @@ import popup from '../helpers/popup'
 import { retrieveBalanceByAddress } from '../utilities/bank'
 
 export default ['$scope', '$location', '$http', 'Storage', 'SweetAlert', 'tzLibreApi', 'angularEztz', function($scope, $location, $http, Storage, SweetAlert, tzLibreApi, angularEztz) {
+  console.log('v. 1.0.0 (Babylon upgrade)')
   const { tzLibreAddress, protos } = config
   const ss = Storage.loadStore()
   if (Storage.isWalletEmpty()) {
@@ -43,49 +44,6 @@ export default ['$scope', '$location', '$http', 'Storage', 'SweetAlert', 'tzLibr
       })
   }
   refreshCanClaim()
-  $http.get($scope.setting.explorer + '/operations/' + $scope.accounts[0].address + '?type=Origination')
-    .then(function(r) {
-      if (r.status === 200) {
-        $scope.accounts = $scope.accounts.map(accounts => {
-          if (!accounts.chain) {
-            accounts.chain = config.KYCTEZOS
-          }
-          return accounts
-        })
-        const newAccounts = r.data.filter(receivedAccounts => {
-          const address = receivedAccounts.type.operations[0].tz1.tz
-          const isNewKT1 = $scope.accounts.filter(a => a.address === address).length === 0
-          return isNewKT1
-        })
-        if (newAccounts.length > 0) {
-          SweetAlert.swal({
-            title: 'Import KT addresses',
-            text: 'We have found ' + r.data.length + ' KT1 address(es) linked to your public key - would you like to import them now? (You can also manually import these by going to Options > Import)',
-            type: 'info',
-            showCancelButton: true,
-            confirmButtonText: 'Yes, import them!',
-            closeOnConfirm: true
-          }).then(isConfirm => {
-            if (isConfirm) {
-              const indexFrom = $scope.accounts.length
-              for (let i = 0; i < newAccounts.length; i++) {
-                $scope.accounts.push(
-                  {
-                    title: 'Account ' + (indexFrom + i),
-                    address: r.data[i].type.operations[0].tz1.tz,
-                    chain: config.KYCTEZOS
-                  }
-                )
-              }
-              ss.accounts = $scope.accounts
-              Storage.setStore(ss)
-              $scope.refresh()
-            }
-            popup.hideLoader()
-          })
-        }
-      }
-    })
   $scope.accountDetails = {}
   $scope.transactions = []
   $scope.accountLive = true
@@ -281,19 +239,17 @@ export default ['$scope', '$location', '$http', 'Storage', 'SweetAlert', 'tzLibr
       raw_balance: 'Loading...',
       loaded: false
     }
-    if (a) {
-      window.eztz.rpc.getDelegate($scope.accounts[a].address).then(function(r) {
-        $scope.$apply(function() {
-          $scope.dd = r
-          const ii = $scope.delegates.keys.indexOf($scope.dd)
-          if (ii >= 0) {
-            $scope.delegateType = $scope.dd
-          } else { $scope.delegateType = '' }
-        })
-      }).then(() => {
-        checkIsDelegatingTzLibre()
+    window.eztz.rpc.getDelegate($scope.accounts[a].address).then(function(r) {
+      $scope.$apply(function() {
+        $scope.dd = r
+        const ii = $scope.delegates.keys.indexOf($scope.dd)
+        if (ii >= 0) {
+          $scope.delegateType = $scope.dd
+        } else { $scope.delegateType = '' }
       })
-    }
+    }).then(() => {
+      checkIsDelegatingTzLibre()
+    })
     tzLibreApi.isVerified($scope.accounts[0].address)
       .then(({ verified, ethereumAddress }) => {
         $scope.$evalAsync(function() {

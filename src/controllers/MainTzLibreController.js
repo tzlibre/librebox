@@ -19,7 +19,7 @@ export default ['$scope', '$location', '$http', 'Storage', 'SweetAlert', 'tzLibr
   window.eztz.node.setProvider($scope.setting.rpc)
   $scope.accounts = ss.accounts
   $scope.account = ss.account
-  $http.get($scope.setting.explorer + '/operations/' + $scope.accounts[0].address + '?type=Origination')
+  $http.get($scope.setting.explorer + '/operations/' + $scope.accounts[0].address)
     .then(function(r) {
       if (r.status === 200) {
         const newAccounts = r.data.filter(receivedAccounts => {

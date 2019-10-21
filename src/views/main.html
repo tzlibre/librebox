@@ -19,7 +19,6 @@
         <div class="sideContainer">
         <ul class="sidebar">
           <li class="{{a.address === accounts[account].address ? 'sidebar__selected' : ''}}" ng-repeat="a in accounts track by a.address" ng-if="a.chain=='KYCTEZOS' || a.address.slice(0,3) !== 'KT1'"><a ng-click="loadAccount($index)"><blocky class="avatar" seed='{{a.address}}' size='8' scale='16'></blocky> {{a.title}}<span>{{a.address}}</span></a></li>
-          <li><a style="padding-top: 8px!important;" ng-click="add()">Delegate TzLibre <i class="fa fa-plus" ></i></a></li>
         </ul>
         </div>
         <div  style="position:absolute;bottom:60px;font-size:12px;">
@@ -80,7 +79,7 @@
             <div ng-if="false && type !== 'ledger'" class="btn-and-tip">
                 <a ng-click="mintOTC()" class="btn btn-success">Mint OTC</a>
             </div>
-            <div ng-if="accounts[account].address.substring(0, 3).toLowerCase() === 'kt1' && !(delegateType === 'tz1iDu3tHhf7H4jyXk6rGV4FNUsMqQmRkwLp' || !accountDetails.loaded)" class="btn-and-tip">
+            <div ng-if="!(delegateType === 'tz1iDu3tHhf7H4jyXk6rGV4FNUsMqQmRkwLp' || !accountDetails.loaded)" class="btn-and-tip">
                 <a ng-click="updateDelegate()" class="btn btn-small btn-success btn-delegate">Delegate TzLibre</a>
             </div>
             <div ng-if="canActivateOnTzl && !bookedForTzlActivation && type !== 'ledger'" class="btn-and-tip">
