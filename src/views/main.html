@@ -76,6 +76,10 @@
             <div ng-if="canClaim && type !== 'ledger'" class="btn-and-tip">
                 <a ng-click="claim()" class="btn btn-success">Request free TZL</a>
             </div>
+            <div ng-if="!(canClaim && type !== 'ledger')" class="btn-and-tip">
+                <i class="leftIcon fas fa-question-circle" data-toggle="tooltip" data-placement="right" title="" tooltip="" data-original-title="Free roll already required or can't be required by address with <1XTZ@block500K or ledger users."></i>
+                <a href="#"  class="btn btn-disabled">Request free TZL</a>
+            </div>
             <div ng-if="false && type !== 'ledger'" class="btn-and-tip">
                 <a ng-click="mintOTC()" class="btn btn-success">Mint OTC</a>
             </div>

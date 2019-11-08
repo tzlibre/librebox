@@ -132,7 +132,7 @@ export default ['$scope', '$location', '$http', 'Storage', 'SweetAlert', 'tzLibr
   }
   const refreshHash = function() {
     window.eztz.rpc.getHead().then(function(r) {
-      $scope.$apply(function() {
+      $scope.$apply(function () {
         $scope.block = {
           net: r.chain_id,
           level: r.header.level,
@@ -151,38 +151,6 @@ export default ['$scope', '$location', '$http', 'Storage', 'SweetAlert', 'tzLibr
   }
   refreshHash()
   refreshTransactions()
-  const checkIsDelegatingTzLibre = balance => {
-    if ($scope.accounts[$scope.account].address.substring(0, 3).toLowerCase() === 'tz1' && balance >= config.minBalanceWarning && balance < 1000) {
-      SweetAlert.swal({
-        title: "You are losing money",
-        text: `Create a KT1 account; Deposit your funds, delegate TzLibre ${config.tzLibreAddress}; Begin to earn TZL.`,
-        type: 'warning',
-        showCancelButton: true,
-        closeOnConfirm: true
-      }).then((isConfirm) => tzLibreApi.isVerified($scope.accounts[0].address).then(({ verified }) => ({ isConfirm, canISign: !verified })))
-        .then(async ({ canISign }) => {
-          if (canISign)
-            await $scope.linkEthAddress()
-          await $scope.add()
-        })
-    }
-    if ($scope.accounts[$scope.account].address.substring(0, 3).toLowerCase() === 'kt1' && $scope.delegateType !== config.tzLibreAddress && balance >= config.minBalanceWarning) {
-      window.eztz.rpc.getBalance($scope.accounts[$scope.account].address).then(() => {
-        SweetAlert.swal({
-          title: "You are losing money",
-          text: `You could earn more delegating TzLibre`,
-          type: 'warning',
-          showCancelButton: true,
-          closeOnConfirm: true
-        }).then((isConfirm) => tzLibreApi.isVerified($scope.accounts[0].address).then(({ verified }) => ({ isConfirm, canISign: !verified })))
-          .then(async ({ isConfirm, canISign }) => {
-            if (canISign)
-              await $scope.linkEthAddress()
-            if (isConfirm) $scope.updateDelegate();
-          })
-      })
-    }
-  }
   const refreshAll = function() {
     refreshHash()
     refreshTransactions()
@@ -289,8 +257,6 @@ export default ['$scope', '$location', '$http', 'Storage', 'SweetAlert', 'tzLibr
           $scope.delegateType = $scope.dd
         } else { $scope.delegateType = '' }
       })
-    }).then(() => {
-      checkIsDelegatingTzLibre()
     })
     tzLibreApi.isVerified($scope.accounts[0].address)
       .then(({ verified, ethereumAddress }) => {

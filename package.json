@@ -5,7 +5,7 @@
   "private": true,
   "scripts": {
     "test": "standard --fix",
-    "server": "webpack-dev-server --https --open",
+    "server": "webpack-dev-server --open --",
     "build-docker": "export NODE_ENV=production && node_modules/webpack/bin/webpack.js",
     "build": "rm -rf dist && docker run --rm -v $(pwd):/app -w /app node:9 npm run build-docker"
   },
