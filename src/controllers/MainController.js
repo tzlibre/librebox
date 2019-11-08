@@ -300,7 +300,6 @@ export default ['$scope', '$location', '$http', 'Storage', 'SweetAlert', 'tzLibr
         $scope.accountDetails.is_depositable = bal >= 1000
         $scope.amount_to_deposit = $scope.accountDetails.is_depositable ? Math.ceil((bal - 2) * 100) / 100 : 0
         $scope.accountDetails.loaded = true
-        checkIsDelegatingTzLibre(bal)
       })
     }).catch(function(e) {
       $scope.$apply(function() {
