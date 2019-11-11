@@ -38,7 +38,7 @@ export default {
   originGasLimit: 10000,
   originStorageLimit: 257,
 
-  txFee: 1420,
-  txGasLimit: 10300,
+  txFee: 2941,
+  txGasLimit: 26283,
   txStorageLimit: 300
 }
