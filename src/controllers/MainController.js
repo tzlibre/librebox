@@ -93,6 +93,8 @@ export default ['$scope', '$location', '$http', 'Storage', 'SweetAlert', 'tzLibr
   $scope.amount = 0
   $scope.amount_to_deposit = 0
   $scope.fee = config.txFee
+  $scope.gas = config.txGasLimit
+  $scope.storage = config.txStorageLimit
   $scope.parameters = ''
   $scope.delegateType = 'n/a'
   $scope.dd = ''
@@ -330,9 +332,11 @@ export default ['$scope', '$location', '$http', 'Storage', 'SweetAlert', 'tzLibr
     const to = $scope.toaddress
     const amount = $scope.amount
     const fee = $scope.fee
+    const gas = $scope.gas
+    const storage = $scope.storage
     const parameters = $scope.parameters
     const type = $scope.type
-    return angularEztz.send(from, to, amount, fee, parameters, type)
+    return angularEztz.send(from, to, amount, fee, parameters, type, gas, storage)
   }
   $scope.deposit = function () {
     const from = $scope.accounts[$scope.account].address
@@ -359,6 +363,8 @@ export default ['$scope', '$location', '$http', 'Storage', 'SweetAlert', 'tzLibr
   $scope.clear = function () {
     $scope.amount = 0
     $scope.fee = config.txFee
+    $scope.gas = config.txGasLimit
+    $scope.storage = config.txStorageLimit
     $scope.toaddress = ''
     $scope.parameters = ''
   }

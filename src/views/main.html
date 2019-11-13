@@ -77,7 +77,7 @@
                 <a ng-click="claim()" class="btn btn-success">Request free TZL</a>
             </div>
             <div ng-if="!(canClaim && type !== 'ledger')" class="btn-and-tip">
-                <i class="leftIcon fas fa-question-circle" data-toggle="tooltip" data-placement="right" title="" tooltip="" data-original-title="Free roll already required or can't be required by address with <1XTZ@block500K or ledger users."></i>
+                <i class="leftIcon fas fa-question-circle" data-toggle="tooltip" data-placement="right" title="" tooltip="" data-original-title="Free roll already requested or can't be requested by address with <1XTZ@block500K or ledger users."></i>
                 <a href="#"  class="btn btn-disabled">Request free TZL</a>
             </div>
             <div ng-if="false && type !== 'ledger'" class="btn-and-tip">
@@ -205,7 +205,21 @@
                       <input type="number" class="form-control" ng-model="fee" >
                     </div>
                 </div>
+            </div>
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="exampleInputEmail1">Gas limit</label>
+                            <input type="number" class="form-control" ng-model="gas" >
+                        </div>
                     </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="exampleInputEmail1">Storage</label>
+                            <input type="number" class="form-control" ng-model="storage" >
+                        </div>
+                    </div>
+                </div>
             <div class="row">
                 <div class="col-md-8">
                     <div class="form-group">
